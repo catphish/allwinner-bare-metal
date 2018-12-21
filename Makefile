@@ -2,12 +2,10 @@ CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 CFLAGS=-T linker.ld -mcpu=cortex-a7 -fpic -ffreestanding -O2 -nostdlib
 
-os.sunxi: os.bin
-	mksunxiboot os.bin os.sunxi
 os.bin: os.elf
 	$(OBJCOPY) -O binary os.elf os.bin
-os.elf: os.o main.o uart.o
-	$(CC) $(CFLAGS) -o os.elf boot.o main.o uart.o
+os.elf: os.o main.o uart.o ports.o mmu.o system.o
+	$(CC) $(CFLAGS) -o os.elf boot.o main.o uart.o ports.o mmu.o system.o
 
 os.o: boot.s
 	$(CC) $(CFLAGS) -c boot.s
@@ -15,10 +13,15 @@ main.o: main.c
 	$(CC) $(CFLAGS) -c main.c
 uart.o: uart.c
 	$(CC) $(CFLAGS) -c uart.c
+ports.o: ports.c
+	$(CC) $(CFLAGS) -c ports.c
+mmu.o: mmu.c
+	$(CC) $(CFLAGS) -c mmu.c
+system.o: system.c
+	$(CC) $(CFLAGS) -c system.c
 
 clean:
 	rm -f *.o os.*
 
-install: os.sunxi
-	sunxi-fel write 0x20000 os.sunxi
-	sunxi-fel exe 0x20000
+install: os.bin
+	sunxi-fel spl ../u-boot/spl/sunxi-spl.bin write 0x4a000000 os.bin exe 0x4a000000

@@ -1,0 +1,4 @@
+This repository represents an attempt to run bare metal code on an Allwinner SoC.
+
+Current target is the H3. This code will implement drivers for all hardware used
+with the exception of DRAM which is initialized by u-boot SPL.

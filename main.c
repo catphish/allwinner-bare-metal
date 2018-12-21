@@ -1,40 +1,27 @@
-#include <stdint.h>
 #include "ports.h"
 #include "uart.h"
-#include "ccu.h"
-
-#define DRAM_BASE         0x40000000
-#define DRAM_ZERO         *(volatile uint32_t *)(DRAM_BASE + 0x4)
-
-#define DRAMC_BASE        0x01c01000
-#define DRAMC_CCR         *(volatile uint32_t *)(DRAMC_BASE + 0x0)
-
-void udelay(uint32_t d) {
-  for(int n=0;n<d*2;n++) asm("NOP");
-}
+#include "mmu.h"
+#include "system.h"
 
 void main() {
-  PG_CFG0 |= (1<<8);   // PORT G2 output
-  PG_DATA |= (1<<2);   // PORT G2 high
-  udelay(1000000);
-  PG_DATA &= ~(1<<2);  // PORT G2 low
+  // Reboot in one second using watchdog
+  reboot(1);
 
+  // Configure the UART for debugging
   uart_init();
   uart_print("Hi!\r\n");
 
-  PLL5_CFG_REG |= (1<<31);
-  udelay(100000);
-  //PLL5_CFG_REG |= (1<<29);
-  //udelay(100000);
-  //DRAMC_CCR |= (1<<31);
+  // Set up MMU and paging configuration
+  mmu_init();
 
-  //DRAM_ZERO = 0x12345678;
-  //uart_print_uint32(PLL5_CFG_REG);
-  //uart_print("\r\n");
-  //uart_print_uint32(DRAM_ZERO);
-  //uart_print("\r\n");
+  // Flash an LED for no reason
+  set_pin_mode(PORTA, 15, 1); // PORT A15 output
+  set_pin_data(PORTA, 15, 1); // PORT A15 high
+  udelay(100000);
+  set_pin_data(PORTA, 15, 0); // PORT A15 low
+
   uart_print("Done!\r\n");
 
-  // Return to FEL
-  asm("ldr pc, =0xFFFF0018;");
+  // Go back to sleep
+  while(1) asm("wfi");
 }

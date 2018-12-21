@@ -1,0 +1,1 @@
+void mmu_init();

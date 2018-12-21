@@ -1,4 +1,3 @@
-zero:
-  b main
-  .ascii "eGON.BT0"
-
+cpsid if
+mov sp, #0x4000
+b main

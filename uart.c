@@ -1,45 +1,25 @@
 #include <stddef.h>
 #include <stdint.h>
-#include "ccu.h"
+#include "uart.h"
 #include "ports.h"
-
-// The UART registers base address.
-#define UART0_BASE 0x01C28000
-// Macros to access UART registers.
-#define UART0_RBR *(volatile uint32_t *)(UART0_BASE + 0x00)
-#define UART0_DLL *(volatile uint32_t *)(UART0_BASE + 0x00)
-#define UART0_THR *(volatile uint32_t *)(UART0_BASE + 0x00)
-#define UART0_IER *(volatile uint32_t *)(UART0_BASE + 0x04)
-#define UART0_FCR *(volatile uint32_t *)(UART0_BASE + 0x08)
-#define UART0_LCR *(volatile uint32_t *)(UART0_BASE + 0x0C)
-#define UART0_LSR *(volatile uint32_t *)(UART0_BASE + 0x14)
-#define UART0_USR *(volatile uint32_t *)(UART0_BASE + 0x7C)
-
-// The length of a null terminated string
-size_t strlen(const char* str)
-{
-  size_t ret = 0;
-  while ( str[ret] != 0 )
-    ret++;
-  return ret;
-}
+#include "ccu.h"
 
 // Set up the UART (serial port)
 void uart_init()
 {
-  PB_CFG2 |= (2<<24);
+  // Configure port
+  set_pin_mode(PORTA, 4, 2);
 
-  // Enable UART0 clock
-  CCU_APB1_GATING |= (1<<16);
+  // Enable clock
+  BUS_CLK_GATING_REG3 |= (1<<16);
+  BUS_SOFT_RST_REG4 |= (1<<16);
 
-  UART0_LCR = 0x83;
+  // Configure baud rate
+  UART0_LCR = (1<<7) | 3;
   UART0_DLL = 13;
-  UART0_LCR = 0x3;
+  UART0_LCR = 3;
 
-  // Disable UART0 interrupts.
-  UART0_IER = 0x00000000;
-
-  // Configure UART0 (enable FIFO)
+  // Enable FIFO
   UART0_FCR = 0x00000001;
 }
 
