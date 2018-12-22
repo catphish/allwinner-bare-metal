@@ -9,7 +9,20 @@ void mmu_init() {
   int n;
   for(n=0;n<4096;n++)
   {
-    *(volatile uint32_t *)(0x4000 + n*4) = (n<<20) | (0<<12) | (3<<10) | (0<<2) | 2;
+    if(n==0)
+    {
+      // SRAM. Normal.
+      *(volatile uint32_t *)(0x4000 + n*4) = (n<<20) | (1<<12) | (3<<10) | (0<<2) | 2;
+    } else if(n>=0x400 && n<=0x401) {
+      // First 2MB of DRAM, we will use this for the framebuffer, no cache
+      *(volatile uint32_t *)(0x4000 + n*4) = (n<<20) | (1<<12) | (3<<10) | (0<<2) | 2;
+    } else if(n>=0x402 && n<0xc00) {
+      // Remaining DRAM. Write back.
+      *(volatile uint32_t *)(0x4000 + n*4) = (n<<20) | (1<<12) | (3<<10) | (3<<2) | 2;
+    } else {
+      // Other stuff. Normal.
+      *(volatile uint32_t *)(0x4000 + n*4) = (n<<20) | (1<<12) | (3<<10) | (0<<2) | 2;
+    }
   }
 
   // Set up the pagetable

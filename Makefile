@@ -4,8 +4,8 @@ CFLAGS=-T linker.ld -mcpu=cortex-a7 -fpic -ffreestanding -O2 -nostdlib
 
 os.bin: os.elf
 	$(OBJCOPY) -O binary os.elf os.bin
-os.elf: os.o main.o uart.o ports.o mmu.o system.o
-	$(CC) $(CFLAGS) -o os.elf boot.o main.o uart.o ports.o mmu.o system.o
+os.elf: os.o main.o uart.o ports.o mmu.o system.o display.o
+	$(CC) $(CFLAGS) -o os.elf boot.o main.o uart.o ports.o mmu.o system.o display.o
 
 os.o: boot.s
 	$(CC) $(CFLAGS) -c boot.s
@@ -19,6 +19,8 @@ mmu.o: mmu.c
 	$(CC) $(CFLAGS) -c mmu.c
 system.o: system.c
 	$(CC) $(CFLAGS) -c system.c
+display.o: display.c
+	$(CC) $(CFLAGS) -c display.c
 
 clean:
 	rm -f *.o os.*

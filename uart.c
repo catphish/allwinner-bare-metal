@@ -8,11 +8,10 @@
 void uart_init()
 {
   // Configure port
-  set_pin_mode(PORTA, 4, 2);
+  set_pin_mode(PORTB, 22, 2);
 
   // Enable clock
-  BUS_CLK_GATING_REG3 |= (1<<16);
-  BUS_SOFT_RST_REG4 |= (1<<16);
+  APB1_GATING_REG |= (1<<16);
 
   // Configure baud rate
   UART0_LCR = (1<<7) | 3;

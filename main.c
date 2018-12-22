@@ -2,10 +2,11 @@
 #include "uart.h"
 #include "mmu.h"
 #include "system.h"
+#include "display.h"
 
 void main() {
   // Reboot in one second using watchdog
-  reboot(1);
+  reboot(2);
 
   // Configure the UART for debugging
   uart_init();
@@ -15,10 +16,13 @@ void main() {
   mmu_init();
 
   // Flash an LED for no reason
-  set_pin_mode(PORTA, 15, 1); // PORT A15 output
-  set_pin_data(PORTA, 15, 1); // PORT A15 high
+  set_pin_mode(PORTG, 2, 1); // PORT A15 output
+  set_pin_data(PORTG, 2, 1); // PORT A15 high
   udelay(100000);
-  set_pin_data(PORTA, 15, 0); // PORT A15 low
+  set_pin_data(PORTG, 2, 0); // PORT A15 low
+
+  uart_print("Display next!\r\n");
+  display_init();
 
   uart_print("Done!\r\n");
 
