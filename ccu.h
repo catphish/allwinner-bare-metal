@@ -36,6 +36,7 @@
 #define DRAM_CFG_REG              *(volatile uint32_t *)(CCU_BASE + 0X0F4)
 #define MBUS_RST_REG              *(volatile uint32_t *)(CCU_BASE + 0X0FC)
 #define DRAM_CLK_GATING_REG       *(volatile uint32_t *)(CCU_BASE + 0X100)
+#define DE_CLK_REG                *(volatile uint32_t *)(CCU_BASE + 0X104)
 #define TCON0_CLK_REG             *(volatile uint32_t *)(CCU_BASE + 0X118)
 #define TVE_CLK_REG               *(volatile uint32_t *)(CCU_BASE + 0X120)
 #define DEINTERLACE_CLK_REG       *(volatile uint32_t *)(CCU_BASE + 0X124)
