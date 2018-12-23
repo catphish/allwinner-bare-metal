@@ -1,4 +1,10 @@
 #include "ports.h"
+#include "ccu.h"
+
+void gpio_init() {
+  BUS_CLK_GATING_REG2 |= (1<<5);
+  APB0_CLK_GATING_REG |= (1<<0);
+}
 
 void set_pin_mode(uint32_t port_addr, uint32_t pin, uint32_t mode) {
   struct port_registers * port = (struct port_registers *)port_addr;

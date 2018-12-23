@@ -78,3 +78,6 @@
 #define CCU_SEC_SWITCH_REG        *(volatile uint32_t *)(CCU_BASE + 0X2F0)
 #define PS_CTRL_REG               *(volatile uint32_t *)(CCU_BASE + 0X300)
 #define PS_CNT_REG                *(volatile uint32_t *)(CCU_BASE + 0X304)
+
+#define R_PRCM_BASE 0x01F01400
+#define APB0_CLK_GATING_REG       *(volatile uint32_t *)(R_PRCM_BASE + 0x28)
