@@ -8,6 +8,7 @@
 // Almost everything here is resolution specific and
 // currently hardcoded to 1920x1080@60Hz.
 void display_init() {
+  // Clocks for HDMU and TCON
   PLL_VIDEO_CTRL_REG = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
   BUS_CLK_GATING_REG1 |= (1<<12) | (1<<11) | (1<<3); // Enable DE, HDMI, TCON0
   BUS_SOFT_RST_REG1 |= (1<<12) | (3<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
@@ -89,20 +90,15 @@ void display_init() {
   HDMI_MC_CLKDIS     = 0x7c; // Main Controller Synchronous Clock Domain Disable
 
   // TCON
-  TCON_GCTL_REG = (1<<31);
-  TCON1_CTL_REG |= (1<<31) | (1<<1);
-  TCON1_BASIC0_REG = (1919<<16) | 1079;
-  TCON1_BASIC1_REG = (1919<<16) | 1079;
-  TCON1_BASIC2_REG = (1919<<16) | 1079;
+  TCON0_GCTL_REG   = (1<<31);
+  TCON0_CTL_REG   |= (1<<31) | (1<<1); // Bit 1 for blue test data
+  TCON0_BASIC0_REG = (1919<<16) | 1079;
+  TCON0_BASIC1_REG = (1919<<16) | 1079;
+  TCON0_BASIC2_REG = (1919<<16) | 1079;
+  TCON0_BASIC3_REG = (2199<<16) | 147;
+  TCON0_BASIC4_REG = (2250<<16) | 35;
+  TCON0_BASIC5_REG = (43<<16) | 4;
 
-  TCON1_BASIC3_REG = (2199<<16)|147;
-  TCON1_BASIC4_REG = (2250<<16)|35;
-  TCON1_BASIC5_REG = (43<<16)|4;
-
-  uart_print_uint32(HDMI_VP_STUFF);
-  uart_print("\r\n");
-  uart_print_uint32(HDMI_TX_INSTUFFING);
-  uart_print("\r\n");
-
-
+  // DE2
+  // TODO: DE2 setup
 }
