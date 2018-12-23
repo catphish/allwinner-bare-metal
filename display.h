@@ -33,4 +33,30 @@
 #define HDMI_FC_VSYNCINDELAY  *(volatile uint8_t*)(HDMI_BASE + 0x100C)
 #define HDMI_FC_VSYNCINWIDTH  *(volatile uint8_t*)(HDMI_BASE + 0x100D)
 
+#define HDMI_FC_CTRLDUR       *(volatile uint8_t*)(HDMI_BASE + 0x1011)
+#define HDMI_FC_EXCTRLDUR     *(volatile uint8_t*)(HDMI_BASE + 0x1012)
+#define HDMI_FC_EXCTRLSPAC    *(volatile uint8_t*)(HDMI_BASE + 0x1013)
+#define HDMI_FC_CH0PREAM      *(volatile uint8_t*)(HDMI_BASE + 0x1014)
+#define HDMI_FC_CH1PREAM      *(volatile uint8_t*)(HDMI_BASE + 0x1015)
+#define HDMI_FC_CH2PREAM      *(volatile uint8_t*)(HDMI_BASE + 0x1016)
+#define HDMI_MC_FLOWCTRL      *(volatile uint8_t*)(HDMI_BASE + 0x4004)
+#define HDMI_MC_CLKDIS        *(volatile uint8_t*)(HDMI_BASE + 0x4001)
+
+#define HDMI_VP_STUFF        *(volatile uint8_t*)(HDMI_BASE + 0x0802)
+#define HDMI_VP_CONF         *(volatile uint8_t*)(HDMI_BASE + 0x0804)
+
+#define HDMI_TX_INVID0       *(volatile uint8_t*)(HDMI_BASE + 0x0200)
+#define HDMI_TX_INSTUFFING   *(volatile uint8_t*)(HDMI_BASE + 0x0201)
+
+// TCON
+#define TCON0_BASE 0x01C0C000
+#define TCON_GCTL_REG    *(volatile uint32_t*)(TCON0_BASE + 0x000)
+#define TCON1_CTL_REG    *(volatile uint32_t*)(TCON0_BASE + 0x090)
+#define TCON1_BASIC0_REG *(volatile uint32_t*)(TCON0_BASE + 0x094)
+#define TCON1_BASIC1_REG *(volatile uint32_t*)(TCON0_BASE + 0x098)
+#define TCON1_BASIC2_REG *(volatile uint32_t*)(TCON0_BASE + 0x09C)
+#define TCON1_BASIC3_REG *(volatile uint32_t*)(TCON0_BASE + 0x0A0)
+#define TCON1_BASIC4_REG *(volatile uint32_t*)(TCON0_BASE + 0x0A4)
+#define TCON1_BASIC5_REG *(volatile uint32_t*)(TCON0_BASE + 0x0A8)
+
 void display_init();

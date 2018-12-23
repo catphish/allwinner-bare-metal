@@ -6,7 +6,7 @@
 
 void main() {
   // Reboot in one second using watchdog
-  reboot(3);
+  reboot(4);
 
   // Configure the UART for debugging
   uart_init();
@@ -24,7 +24,6 @@ void main() {
   uart_print("Setting up display!\r\n");
   display_init();
 
-  uart_print_uint32(HDMI_PHY_STS);
   uart_print("Done!\r\n");
 
   // Go back to sleep
