@@ -8,14 +8,59 @@
 // Almost everything here is resolution specific and
 // currently hardcoded to 1920x1080@60Hz.
 void display_init() {
-  // Clocks for HDMI and TCON
-  PLL_VIDEO_CTRL_REG = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
-  PLL_DE_CTRL_REG = (1<<31) | (1<<24) | (17<<8) | (0<<0);
+  // Clocks for HDMI, TCON and DE2
+  PLL_VIDEO_CTRL_REG   = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
+  PLL_DE_CTRL_REG      = (1<<31) | (1<<24) | (17<<8) | (0<<0); // 432MHz
   BUS_CLK_GATING_REG1 |= (1<<12) | (1<<11) | (1<<3); // Enable DE, HDMI, TCON0
-  BUS_SOFT_RST_REG1 |= (1<<12) | (3<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
-  HDMI_CLK_REG = (1<<31); // Enable HDMI clk (use PLL3)
-  HDMI_SLOW_CLK_REG = (1<<31); // Enable HDMI slow clk
-  TCON0_CLK_REG = (1<<31) | 1; // Enable TCON0 clk, divide by 2
+  BUS_SOFT_RST_REG1   |= (1<<12) | (1<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
+  HDMI_CLK_REG         = (1<<31); // Enable HDMI clk (use PLL3)
+  HDMI_SLOW_CLK_REG    = (1<<31); // Enable HDMI slow clk
+  TCON0_CLK_REG        = (1<<31) | 1; // Enable TCON0 clk, divide by 2
+  DE_CLK_REG           = (1<<31) | (1<<24); // Enable DE clock, set source to PLL_DE
+
+udelay(100000);
+
+  // DE2
+  DE_AHB_RESET |= (1<<0);
+  DE_SCLK_GATE |= (1<<0);
+  DE_HCLK_GATE |= (1<<0);
+  DE_DE2TCON_MUX &= ~(1<<0);
+
+  DE_MIXER0_GLB_CTL = 1;
+  DE_MIXER0_GLB_STS = 0;
+  DE_MIXER0_GLB_DBUFFER = 1;
+  DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
+
+  // I'm told this is a good idea
+  for(uint32_t addr = DE_MIXER0 + 0x2000; addr < DE_MIXER0 + 0x6000; addr += 4)
+   *(volatile uint32_t*)(addr) = 0;
+
+   // Put some red in DRAM, if we see a red stripe, we're good
+  for(int n=0x40000000; n<(0x40000000+0x10000); n+=4)
+    *(volatile uint32_t*)(n) = 0xffff0000;
+
+  DE_MIXER0_BLD_FILL_COLOR_CTL = 0x101;
+  DE_MIXER0_BLD_CH_RTCTL = 1;
+  DE_MIXER0_BLD_PREMUL_CTL = 0;
+  DE_MIXER0_BLD_BK_COLOR = 0xff000000;
+
+  DE_MIXER0_BLD_CTL(0) = 0x03010301;
+  DE_MIXER0_BLD_SIZE = (1079<<16) | 1919;
+  DE_MIXER0_BLD_OUT_COLOR = 0;
+  DE_MIXER0_BLD_KEY_CTL = 0;
+  DE_MIXER0_BLD_FILL_COLOR(0) = 0xff000000;
+  DE_MIXER0_BLD_CH_ISIZE(0) = (1079<<16) | 1919;
+
+  DE_MIXER0_OVL_UI1_ATTCTL(0) = (1<<0) | (4<<8);
+  DE_MIXER0_OVL_UI1_MBSIZE(0) = (1079<<16) | 1919;
+  DE_MIXER0_OVL_UI1_COOR(0) = 0;
+  DE_MIXER0_OVL_UI1_PITCH(0) = 7680;
+  DE_MIXER0_OVL_UI1_TOP_LADD(0) = 0x40000000;
+  DE_MIXER0_OVL_UI1_SIZE = (1079<<16) | 1919;
+
+  DE_MIXER0_GLB_DBUFFER = 1;
+
+udelay(100000);
 
   // HDMI PHY init, the following black magic is based on the procedure documented at:
   // http://linux-sunxi.org/images/3/38/AW_HDMI_TX_PHY_S40_Spec_V0.1.pdf
@@ -100,37 +145,10 @@ void display_init() {
   TCON0_BASIC4_REG = (2250<<16) | 35;
   TCON0_BASIC5_REG = (43<<16) | 4;
 
-  // DE2
-  DE_CLK_REG = (1<<31) | (1<<24);
+  for(int n=DE_MIXER0; n<(DE_MIXER0+0x1000); n+=4) {
+    uart_print_uint32(*(volatile uint32_t*)(n));
+    uart_print(" ");
+  }
+  uart_print("\r\n\r\n");
 
-  udelay(10000);
-
-  DE_AHB_RESET = (1<<0);
-  DE_SCLK_GATE = (1<<0);
-  DE_HCLK_GATE = (1<<0);
-  DE_DE2TCON_MUX = 0;
-
-  DE_MIXER0_GLB_CTL = 0;
-  DE_MIXER0_GLB_STS = 0;
-  DE_MIXER0_GLB_DBUFFER = 1;
-  DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
-
-  // I'm told this is a good idea
-  for(uint32_t addr = DE_MIXER0 + 0x1000; addr < DE_MIXER0 + 0x6000; addr += 4)
-    *(volatile uint32_t*)(addr) = 0;
-
-  DE_MIXER0_BLD_FILL_COLOR_CTL = 0x101;
-  DE_MIXER0_BLD_CH_RTCTL = 0;
-  DE_MIXER0_BLD_BK_COLOR = 0xffff0000;
-
-  DE_MIXER0_BLD_CTL[0] = 0x03010301;
-  DE_MIXER0_BLD_SIZE = (1079<<16) | 1919;
-  DE_MIXER0_BLD_OUT_COLOR = 0;
-  DE_MIXER0_BLD_KEY_CTL = 0;
-  DE_MIXER0_BLD_FILL_COLOR_0 = 0xff000000;
-  DE_MIXER0_BLD_ISIZE_0 = (1079<<16) | 1919;
-
-  DE_MIXER0_OVL_V_ATTCTL = 1;
-  
-  DE_MIXER0_GLB_DBUFFER = 1;
 }
