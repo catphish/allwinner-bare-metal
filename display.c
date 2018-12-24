@@ -8,8 +8,9 @@
 // Almost everything here is resolution specific and
 // currently hardcoded to 1920x1080@60Hz.
 void display_init() {
-  // Clocks for HDMU and TCON
+  // Clocks for HDMI and TCON
   PLL_VIDEO_CTRL_REG = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
+  PLL_DE_CTRL_REG = (1<<31) | (1<<24) | (17<<8) | (0<<0);
   BUS_CLK_GATING_REG1 |= (1<<12) | (1<<11) | (1<<3); // Enable DE, HDMI, TCON0
   BUS_SOFT_RST_REG1 |= (1<<12) | (3<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
   HDMI_CLK_REG = (1<<31); // Enable HDMI clk (use PLL3)
@@ -91,7 +92,7 @@ void display_init() {
 
   // TCON
   TCON0_GCTL_REG   = (1<<31);
-  TCON0_CTL_REG   |= (1<<31) | (1<<1); // Bit 1 for blue test data
+  TCON0_CTL_REG   |= (1<<31);
   TCON0_BASIC0_REG = (1919<<16) | 1079;
   TCON0_BASIC1_REG = (1919<<16) | 1079;
   TCON0_BASIC2_REG = (1919<<16) | 1079;
@@ -100,5 +101,36 @@ void display_init() {
   TCON0_BASIC5_REG = (43<<16) | 4;
 
   // DE2
-  // TODO: DE2 setup
+  DE_CLK_REG = (1<<31) | (1<<24);
+
+  udelay(10000);
+
+  DE_AHB_RESET = (1<<0);
+  DE_SCLK_GATE = (1<<0);
+  DE_HCLK_GATE = (1<<0);
+  DE_DE2TCON_MUX = 0;
+
+  DE_MIXER0_GLB_CTL = 0;
+  DE_MIXER0_GLB_STS = 0;
+  DE_MIXER0_GLB_DBUFFER = 1;
+  DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
+
+  // I'm told this is a good idea
+  for(uint32_t addr = DE_MIXER0 + 0x1000; addr < DE_MIXER0 + 0x6000; addr += 4)
+    *(volatile uint32_t*)(addr) = 0;
+
+  DE_MIXER0_BLD_FILL_COLOR_CTL = 0x101;
+  DE_MIXER0_BLD_CH_RTCTL = 0;
+  DE_MIXER0_BLD_BK_COLOR = 0xffff0000;
+
+  DE_MIXER0_BLD_CTL[0] = 0x03010301;
+  DE_MIXER0_BLD_SIZE = (1079<<16) | 1919;
+  DE_MIXER0_BLD_OUT_COLOR = 0;
+  DE_MIXER0_BLD_KEY_CTL = 0;
+  DE_MIXER0_BLD_FILL_COLOR_0 = 0xff000000;
+  DE_MIXER0_BLD_ISIZE_0 = (1079<<16) | 1919;
+
+  DE_MIXER0_OVL_V_ATTCTL = 1;
+  
+  DE_MIXER0_GLB_DBUFFER = 1;
 }
