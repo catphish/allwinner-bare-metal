@@ -121,7 +121,8 @@ void display_init() {
   udelay(100000);
 
   DE_MIXER0_GLB_CTL = 1;
-  //DE_MIXER0_GLB_DBUFFER = 1;
+  DE_MIXER0_GLB_STS = 0;
+  DE_MIXER0_GLB_DBUFFER = 1;
   DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
 
   // I'm told this is a good idea
@@ -165,7 +166,6 @@ void display_init() {
   DE_MIXER0_FCC_REGS  = 0;
 
   DE_MIXER0_GLB_DBUFFER = 1;
-  //DE_MIXER0_GLB_STS = 0;
 
   uart_print_uint32(DE_MIXER0_GLB_STS);
   uart_print("\r\n");
