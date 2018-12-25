@@ -11,8 +11,8 @@ void display_init() {
   // Clocks for HDMI, TCON and DE2
   PLL_VIDEO_CTRL_REG   = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
   PLL_DE_CTRL_REG      = (1<<31) | (1<<24) | (17<<8) | (0<<0); // 432MHz
-  BUS_CLK_GATING_REG1 |= (1<<11) | (1<<3); // Enable DE, HDMI, TCON0
-  BUS_SOFT_RST_REG1   |= (3<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
+  BUS_CLK_GATING_REG1 |= (1<<11) | (1<<3); // Enable HDMI, TCON0
+  BUS_SOFT_RST_REG1   |= (3<<10) | (1<<3); // De-assert reset of HDMI0/1, TCON0
   HDMI_CLK_REG         = (1<<31); // Enable HDMI clk (use PLL3)
   HDMI_SLOW_CLK_REG    = (1<<31); // Enable HDMI slow clk
   TCON0_CLK_REG        = (1<<31) | 1; // Enable TCON0 clk, divide by 2
@@ -107,15 +107,18 @@ void display_init() {
   udelay(100000);
 
   // DE2
-  BUS_CLK_GATING_REG1 |= (1<<12) | (1<<11) | (1<<3); // Enable DE, HDMI, TCON0
-  BUS_SOFT_RST_REG1   |= (1<<12) | (3<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
+  BUS_CLK_GATING_REG1 |= (1<<12); // Enable DE
+  BUS_SOFT_RST_REG1   |= (1<<12); // De-assert reset of DE
   DE_CLK_REG           = (1<<31) | (1<<24); // Enable DE clock, set source to PLL_DE
 
+  udelay(100000);
 
   DE_AHB_RESET |= (1<<0);
   DE_SCLK_GATE |= (1<<0);
   DE_HCLK_GATE |= (1<<0);
   DE_DE2TCON_MUX &= ~(1<<0);
+
+  udelay(100000);
 
   DE_MIXER0_GLB_CTL = 1;
   //DE_MIXER0_GLB_DBUFFER = 1;
