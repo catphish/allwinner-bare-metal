@@ -51,6 +51,8 @@
 // TCON
 #define TCON0_BASE 0x01C0C000
 #define TCON0_GCTL_REG   *(volatile uint32_t*)(TCON0_BASE + 0x000)
+#define TCON_GINT0_REG   *(volatile uint32_t*)(TCON0_BASE + 0x004)
+#define TCON_GINT1_REG   *(volatile uint32_t*)(TCON0_BASE + 0x008)
 #define TCON0_CTL_REG    *(volatile uint32_t*)(TCON0_BASE + 0x090)
 #define TCON0_BASIC0_REG *(volatile uint32_t*)(TCON0_BASE + 0x094)
 #define TCON0_BASIC1_REG *(volatile uint32_t*)(TCON0_BASE + 0x098)
@@ -103,5 +105,27 @@
 #define DE_MIXER0_OVL_UI1_TOP_HADD      *(volatile uint32_t*)(DE_MIXER0_OVL_UI1 + 0x80)
 #define DE_MIXER0_OVL_UI1_BOT_HADD      *(volatile uint32_t*)(DE_MIXER0_OVL_UI1 + 0x84)
 #define DE_MIXER0_OVL_UI1_SIZE          *(volatile uint32_t*)(DE_MIXER0_OVL_UI1 + 0x88)
+
+#define SUNXI_DE2_MUX_VSU_REGS      0x20000
+#define SUNXI_DE2_MUX_GSU1_REGS     0x30000
+#define SUNXI_DE2_MUX_GSU2_REGS     0x40000
+#define SUNXI_DE2_MUX_GSU3_REGS     0x50000
+#define SUNXI_DE2_MUX_FCE_REGS      0xa0000
+#define SUNXI_DE2_MUX_BWS_REGS      0xa2000
+#define SUNXI_DE2_MUX_LTI_REGS      0xa4000
+#define SUNXI_DE2_MUX_PEAK_REGS     0xa6000
+#define SUNXI_DE2_MUX_ASE_REGS      0xa8000
+#define SUNXI_DE2_MUX_FCC_REGS      0xaa000
+
+#define DE_MIXER0_VSU_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0x20000)
+#define DE_MIXER0_GSU1_REGS         *(volatile uint32_t*)(DE_MIXER0 + 0x30000)
+#define DE_MIXER0_GSU2_REGS         *(volatile uint32_t*)(DE_MIXER0 + 0x40000)
+#define DE_MIXER0_GSU3_REGS         *(volatile uint32_t*)(DE_MIXER0 + 0x50000)
+#define DE_MIXER0_FCE_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xa0000)
+#define DE_MIXER0_BWS_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xa2000)
+#define DE_MIXER0_LTI_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xa4000)
+#define DE_MIXER0_PEAK_REGS         *(volatile uint32_t*)(DE_MIXER0 + 0xa6000)
+#define DE_MIXER0_ASE_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xa8000)
+#define DE_MIXER0_FCC_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xaa000)
 
 void display_init();
