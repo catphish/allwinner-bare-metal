@@ -106,15 +106,4 @@
 #define DE_MIXER0_OVL_UI1_BOT_HADD      *(volatile uint32_t*)(DE_MIXER0_OVL_UI1 + 0x84)
 #define DE_MIXER0_OVL_UI1_SIZE          *(volatile uint32_t*)(DE_MIXER0_OVL_UI1 + 0x88)
 
-#define SUNXI_DE2_MUX_VSU_REGS      0x20000
-#define SUNXI_DE2_MUX_GSU1_REGS     0x30000
-#define SUNXI_DE2_MUX_GSU2_REGS     0x40000
-#define SUNXI_DE2_MUX_GSU3_REGS     0x50000
-#define SUNXI_DE2_MUX_FCE_REGS      0xa0000
-#define SUNXI_DE2_MUX_BWS_REGS      0xa2000
-#define SUNXI_DE2_MUX_LTI_REGS      0xa4000
-#define SUNXI_DE2_MUX_PEAK_REGS     0xa6000
-#define SUNXI_DE2_MUX_ASE_REGS      0xa8000
-#define SUNXI_DE2_MUX_FCC_REGS      0xaa000
-
 void display_init();

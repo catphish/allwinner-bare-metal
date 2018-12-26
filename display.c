@@ -4,21 +4,19 @@
 #include "display.h"
 #include "uart.h"
 
-// This function initializes the HDMI port and TCON.
-// Almost everything here is resolution specific and
-// currently hardcoded to 1920x1080@60Hz.
-void display_init() {
-  // Clocks for HDMI, TCON and DE2
-  PLL_VIDEO_CTRL_REG   = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
+void display_clocks_init() {
+  // Set up shared and dedicated clocks for HDMI, LCD/TCON and DE2
   PLL_DE_CTRL_REG      = (1<<31) | (1<<24) | (17<<8) | (0<<0); // 432MHz
-  BUS_CLK_GATING_REG1 |= (1<<11) | (1<<3); // Enable HDMI, TCON0
-  BUS_SOFT_RST_REG1   |= (3<<10) | (1<<3); // De-assert reset of HDMI0/1, TCON0
+  PLL_VIDEO_CTRL_REG   = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
+  BUS_CLK_GATING_REG1 |= (1<<12) | (1<<11) | (1<<3); // Enable DE, HDMI, TCON0
+  BUS_SOFT_RST_REG1   |= (1<<12) | (3<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
+  DE_CLK_REG           = (1<<31) | (1<<24); // Enable DE clock, set source to PLL_DE
   HDMI_CLK_REG         = (1<<31); // Enable HDMI clk (use PLL3)
   HDMI_SLOW_CLK_REG    = (1<<31); // Enable HDMI slow clk
   TCON0_CLK_REG        = (1<<31) | 1; // Enable TCON0 clk, divide by 2
+}
 
-  udelay(100000);
-
+void hdmi_init() {
   // HDMI PHY init, the following black magic is based on the procedure documented at:
   // http://linux-sunxi.org/images/3/38/AW_HDMI_TX_PHY_S40_Spec_V0.1.pdf
   HDMI_PHY_CFG1 = 0;
@@ -61,10 +59,8 @@ void display_init() {
   /* descramble register offsets */
   HDMI_PHY_UNSCRAMBLE = 0x42494E47;
 
-  udelay(100000);
-
-//   // HDMI Config, based on the documentation at:
-//   // https://people.freebsd.org/~gonzo/arm/iMX6-HDMI.pdf
+  // HDMI Config, based on the documentation at:
+  // https://people.freebsd.org/~gonzo/arm/iMX6-HDMI.pdf
   HDMI_FC_INVIDCONF = (1<<6) | (1<<5) | (1<<4) | (1<<3); // Polarity etc
   HDMI_FC_INHACTIV0 = (1920 & 0xff);    // Horizontal pixels
   HDMI_FC_INHACTIV1 = (1920 >> 8);      // Horizontal pixels
@@ -92,6 +88,9 @@ void display_init() {
   HDMI_MC_CLKDIS     = 0x7e; // Main Controller Synchronous Clock Domain Disable
   HDMI_MC_CLKDIS     = 0x7c; // Main Controller Synchronous Clock Domain Disable
 
+}
+
+void lcd_init() {
   // TCON
   TCON0_GCTL_REG   = (1<<31);
   TCON_GINT0_REG = 0;
@@ -103,22 +102,15 @@ void display_init() {
   TCON0_BASIC3_REG = (2199<<16) | 147;
   TCON0_BASIC4_REG = (2250<<16) | 35;
   TCON0_BASIC5_REG = (43<<16) | 4;
+}
 
-  udelay(100000);
-
+void de2_init() {
   // DE2
-  BUS_CLK_GATING_REG1 |= (1<<12); // Enable DE
-  BUS_SOFT_RST_REG1   |= (1<<12); // De-assert reset of DE
-  DE_CLK_REG           = (1<<31) | (1<<24); // Enable DE clock, set source to PLL_DE
-
-  udelay(100000);
 
   DE_AHB_RESET |= (1<<0);
   DE_SCLK_GATE |= (1<<0);
   DE_HCLK_GATE |= (1<<0);
   DE_DE2TCON_MUX &= ~(1<<0);
-
-  udelay(100000);
 
   // Erase the whole DE. This contains uninitialized data.
   for(uint32_t addr = DE_MIXER0 + 0x0000; addr < DE_MIXER0 + 0xC000; addr += 4)
@@ -153,5 +145,14 @@ void display_init() {
   DE_MIXER0_OVL_UI1_SIZE = (1079<<16) | 1919;
 
   DE_MIXER0_GLB_DBUFFER = 1;
+}
 
+// This function initializes the HDMI port and TCON.
+// Almost everything here is resolution specific and
+// currently hardcoded to 1920x1080@60Hz.
+void display_init() {
+  display_clocks_init();
+  hdmi_init();
+  lcd_init();
+  de2_init();
 }
