@@ -48,18 +48,18 @@
 #define HDMI_TX_INVID0       *(volatile uint8_t*)(HDMI_BASE + 0x0200)
 #define HDMI_TX_INSTUFFING   *(volatile uint8_t*)(HDMI_BASE + 0x0201)
 
-// TCON
-#define TCON0_BASE 0x01C0C000
-#define TCON0_GCTL_REG   *(volatile uint32_t*)(TCON0_BASE + 0x000)
-#define TCON_GINT0_REG   *(volatile uint32_t*)(TCON0_BASE + 0x004)
-#define TCON_GINT1_REG   *(volatile uint32_t*)(TCON0_BASE + 0x008)
-#define TCON0_CTL_REG    *(volatile uint32_t*)(TCON0_BASE + 0x090)
-#define TCON0_BASIC0_REG *(volatile uint32_t*)(TCON0_BASE + 0x094)
-#define TCON0_BASIC1_REG *(volatile uint32_t*)(TCON0_BASE + 0x098)
-#define TCON0_BASIC2_REG *(volatile uint32_t*)(TCON0_BASE + 0x09C)
-#define TCON0_BASIC3_REG *(volatile uint32_t*)(TCON0_BASE + 0x0A0)
-#define TCON0_BASIC4_REG *(volatile uint32_t*)(TCON0_BASE + 0x0A4)
-#define TCON0_BASIC5_REG *(volatile uint32_t*)(TCON0_BASE + 0x0A8)
+// LCD/TCON
+#define LCD0_BASE 0x01C0C000
+#define LCD0_GCTL_REG    *(volatile uint32_t*)(LCD0_BASE + 0x000)
+#define LCD0_GINT0_REG   *(volatile uint32_t*)(LCD0_BASE + 0x004)
+#define LCD0_GINT1_REG   *(volatile uint32_t*)(LCD0_BASE + 0x008)
+#define LCD0_TCON1_CTL_REG    *(volatile uint32_t*)(LCD0_BASE + 0x090)
+#define LCD0_TCON1_BASIC0_REG *(volatile uint32_t*)(LCD0_BASE + 0x094)
+#define LCD0_TCON1_BASIC1_REG *(volatile uint32_t*)(LCD0_BASE + 0x098)
+#define LCD0_TCON1_BASIC2_REG *(volatile uint32_t*)(LCD0_BASE + 0x09C)
+#define LCD0_TCON1_BASIC3_REG *(volatile uint32_t*)(LCD0_BASE + 0x0A0)
+#define LCD0_TCON1_BASIC4_REG *(volatile uint32_t*)(LCD0_BASE + 0x0A4)
+#define LCD0_TCON1_BASIC5_REG *(volatile uint32_t*)(LCD0_BASE + 0x0A8)
 
 // DE2
 #define DE_BASE 0x01000000
@@ -68,8 +68,6 @@
 #define DE_AHB_RESET          *(volatile uint32_t*)(DE_BASE + 0x008)
 #define DE_SCLK_DIV           *(volatile uint32_t*)(DE_BASE + 0x00C)
 #define DE_DE2TCON_MUX        *(volatile uint32_t*)(DE_BASE + 0x010)
-// #define DE_CMD_CTL            *(volatile uint32_t*)(DE_BASE + 0x014)
-// #define DE_DI_CTL             *(volatile uint32_t*)(DE_BASE + 0x01C)
 
 #define DE_MIXER0             (DE_BASE + 0x100000)
 #define DE_MIXER0_GLB         (DE_MIXER0 + 0x0)
