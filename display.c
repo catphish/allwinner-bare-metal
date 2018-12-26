@@ -120,13 +120,8 @@ void display_init() {
 
   udelay(100000);
 
-  DE_MIXER0_GLB_CTL = 1;
-  DE_MIXER0_GLB_STS = 0;
-  DE_MIXER0_GLB_DBUFFER = 1;
-  DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
-
-  // I'm told this is a good idea
-  for(uint32_t addr = DE_MIXER0 + 0x2000; addr < DE_MIXER0 + 0x6000; addr += 4)
+  // Erase the whole DE. This contains uninitialized data.
+  for(uint32_t addr = DE_MIXER0 + 0x0000; addr < DE_MIXER0 + 0xC000; addr += 4)
    *(volatile uint32_t*)(addr) = 0;
 
    // Put some data in DRAM, if we see colours we're good
@@ -134,6 +129,9 @@ void display_init() {
     *(volatile uint32_t*)(n) = 0xff00ff00;
   for(int n=0x40000000+1920*1080*2; n<(0x40000000+1920*1080*4); n+=4)
     *(volatile uint32_t*)(n) = 0xffff00ff;
+
+  DE_MIXER0_GLB_CTL = 1;
+  DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
 
   DE_MIXER0_BLD_FILL_COLOR_CTL = 0x101;
   DE_MIXER0_BLD_CH_RTCTL = 1;
@@ -154,20 +152,6 @@ void display_init() {
   DE_MIXER0_OVL_UI1_TOP_LADD(0) = 0x40000000;
   DE_MIXER0_OVL_UI1_SIZE = (1079<<16) | 1919;
 
-  DE_MIXER0_VSU_REGS  = 0;
-  DE_MIXER0_GSU1_REGS = 0;
-  DE_MIXER0_GSU2_REGS = 0;
-  DE_MIXER0_GSU3_REGS = 0;
-  DE_MIXER0_FCE_REGS  = 0;
-  DE_MIXER0_BWS_REGS  = 0;
-  DE_MIXER0_LTI_REGS  = 0;
-  DE_MIXER0_PEAK_REGS = 0;
-  DE_MIXER0_ASE_REGS  = 0;
-  DE_MIXER0_FCC_REGS  = 0;
-
   DE_MIXER0_GLB_DBUFFER = 1;
-
-  uart_print_uint32(DE_MIXER0_GLB_STS);
-  uart_print("\r\n");
 
 }

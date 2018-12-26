@@ -117,15 +117,4 @@
 #define SUNXI_DE2_MUX_ASE_REGS      0xa8000
 #define SUNXI_DE2_MUX_FCC_REGS      0xaa000
 
-#define DE_MIXER0_VSU_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0x20000)
-#define DE_MIXER0_GSU1_REGS         *(volatile uint32_t*)(DE_MIXER0 + 0x30000)
-#define DE_MIXER0_GSU2_REGS         *(volatile uint32_t*)(DE_MIXER0 + 0x40000)
-#define DE_MIXER0_GSU3_REGS         *(volatile uint32_t*)(DE_MIXER0 + 0x50000)
-#define DE_MIXER0_FCE_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xa0000)
-#define DE_MIXER0_BWS_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xa2000)
-#define DE_MIXER0_LTI_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xa4000)
-#define DE_MIXER0_PEAK_REGS         *(volatile uint32_t*)(DE_MIXER0 + 0xa6000)
-#define DE_MIXER0_ASE_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xa8000)
-#define DE_MIXER0_FCC_REGS          *(volatile uint32_t*)(DE_MIXER0 + 0xaa000)
-
 void display_init();
