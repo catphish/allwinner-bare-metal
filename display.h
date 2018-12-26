@@ -104,4 +104,19 @@
 #define DE_MIXER0_OVL_UI1_BOT_HADD      *(volatile uint32_t*)(DE_MIXER0_OVL_UI1 + 0x84)
 #define DE_MIXER0_OVL_UI1_SIZE          *(volatile uint32_t*)(DE_MIXER0_OVL_UI1 + 0x88)
 
+#define DE_MIXER0_UIS1_BASE             (DE_MIXER0 + 0x40000)
+#define DE_MIXER0_UIS1_CTRL_REG         *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x00)
+#define DE_MIXER0_UIS1_STATUS_REG       *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x08)
+#define DE_MIXER0_UIS1_FIELD_CTRL_REG   *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x0C)
+#define DE_MIXER0_UIS1_BIST_REG         *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x10)
+#define DE_MIXER0_UIS1_OUTSIZE_REG      *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x40)
+#define DE_MIXER0_UIS1_INSIZE_REG       *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x80)
+#define DE_MIXER0_UIS1_HSTEP_REG        *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x88)
+#define DE_MIXER0_UIS1_VSTEP_REG        *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x8C)
+#define DE_MIXER0_UIS1_HPHASE_REG       *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x90)
+#define DE_MIXER0_UIS1_VPHASE0_REG      *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x98)
+#define DE_MIXER0_UIS1_VPHASE1_REG      *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x9C)
+#define DE_MIXER0_UIS1_HCOEF_REGN(x)    *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x200 + x * 4)
+#define DE_MIXER0_UIS1_VCOEF_REGN(x)    *(volatile uint32_t*)(DE_MIXER0_UIS1_BASE + 0x400 + x * 4)
+
 void display_init();

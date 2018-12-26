@@ -115,21 +115,27 @@ void de2_init(void* framebuffer) {
   DE_MIXER0_GLB_CTL = 1;
   DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
 
-  DE_MIXER0_BLD_FILL_COLOR_CTL = 0x101;
+  DE_MIXER0_BLD_FILL_COLOR_CTL = 0x100;
   DE_MIXER0_BLD_CH_RTCTL = 1;
-  DE_MIXER0_BLD_BK_COLOR = 0xff000000;
-  DE_MIXER0_BLD_CH_RTCTL = 1;
-  DE_MIXER0_BLD_CTL(0) = 0x03010301;
+  //DE_MIXER0_BLD_CTL(0) = 0x03010301;
   DE_MIXER0_BLD_SIZE = (1079<<16) | 1919;
-  DE_MIXER0_BLD_FILL_COLOR(0) = 0xff000000;
   DE_MIXER0_BLD_CH_ISIZE(0) = (1079<<16) | 1919;
 
   DE_MIXER0_OVL_UI1_ATTCTL(0) = (1<<0) | (4<<8);
-  DE_MIXER0_OVL_UI1_MBSIZE(0) = (1079<<16) | 1919;
+  DE_MIXER0_OVL_UI1_MBSIZE(0) = (269<<16) | 479;
   DE_MIXER0_OVL_UI1_COOR(0) = 0;
-  DE_MIXER0_OVL_UI1_PITCH(0) = 7680;
+  DE_MIXER0_OVL_UI1_PITCH(0) = 1920;
   DE_MIXER0_OVL_UI1_TOP_LADD(0) = (uint32_t)framebuffer;
-  DE_MIXER0_OVL_UI1_SIZE = (1079<<16) | 1919;
+  DE_MIXER0_OVL_UI1_SIZE = (269<<16) | 479;
+
+  DE_MIXER0_UIS1_CTRL_REG = 1;
+  DE_MIXER0_UIS1_OUTSIZE_REG = (1079<<16) | 1919;
+  DE_MIXER0_UIS1_INSIZE_REG = (269<<16) | 479;
+  DE_MIXER0_UIS1_HSTEP_REG = 0x40000;
+  DE_MIXER0_UIS1_VSTEP_REG = 0x40000;
+  for(int n=0;n<16;n++)
+    DE_MIXER0_UIS1_HCOEF_REGN(n) = 0x00007f00;
+  DE_MIXER0_UIS1_CTRL_REG = 1 | (1<<4);
 
   DE_MIXER0_GLB_DBUFFER = 1;
 }
@@ -137,9 +143,18 @@ void de2_init(void* framebuffer) {
 // This function initializes the HDMI port and TCON.
 // Almost everything here is resolution specific and
 // currently hardcoded to 1920x1080@60Hz.
-void display_init(void* framebuffer) {
+void display_init(uint32_t* framebuffer) {
+  // Clear display memory
+  for(int n=0; n<0x200000; n++) {
+    framebuffer[n] = 0xff000000;
+    if((n%480)&2) framebuffer[n] |= 0x00ff0000;
+    if((n/480)&2) framebuffer[n] |= 0x000000ff;
+  }
+
   display_clocks_init();
   hdmi_init();
   lcd_init();
   de2_init(framebuffer);
+
+  LCD0_GINT0_REG = (1<<30);
 }
