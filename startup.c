@@ -7,11 +7,14 @@
 
 uint32_t tick_counter;
 
+void game_tick(uint32_t tick_counter);
+void game_start();
+
 void startup() {
   tick_counter = 0;
 
   // Reboot in n seconds using watchdog
-  reboot(4); // 0x8 == 10 second reset timer
+  reboot(8); // 0x8 == 10 second reset timer
 
   // Enble all GPIO
   gpio_init();
@@ -28,9 +31,10 @@ void startup() {
   set_pin_data(PORTL, 10, 1); // PORT L10 high
 
   // Configure display
-  display_init((void*)(0x60000000-0x800000));
+  display_init((volatile uint32_t*)(0x60000000-VIDEO_RAM_BYTES));
 
-  // Put some data in display DRAM, if we see colours we're good
+  uart_print("Ready!\r\n");
+  game_start();
 
   install_ivt();
 
@@ -39,6 +43,7 @@ void startup() {
 }
 
 void game_tick_next() {
-  tick_counter++;
-  //game_tick(tick_counter);
+  display_buffer_swap();
+  cls();
+  game_tick(tick_counter);
 }

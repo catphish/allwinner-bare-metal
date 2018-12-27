@@ -10,7 +10,7 @@ void game_tick_next();
 // Currently this is always triggered by at new frame at 60Hz
 void __attribute__((interrupt("FIQ"))) interrupt(void) {
 
-  LCD0_GINT0_REG &= ~(1<<14);
+  LCD0_GINT0 &= ~(1<<14);
   game_tick_next();
 }
 

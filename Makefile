@@ -4,8 +4,8 @@ CFLAGS=-T linker.ld -mcpu=cortex-a7 -fpic -ffreestanding -O2 -nostdlib
 
 os.bin: os.elf
 	$(OBJCOPY) -O binary os.elf os.bin
-os.elf: boot.o startup.o uart.o ports.o mmu.o system.o display.o interrupts.o
-	$(CC) $(CFLAGS) -o os.elf boot.o startup.o uart.o ports.o mmu.o system.o display.o interrupts.o
+os.elf: boot.o startup.o uart.o ports.o mmu.o system.o display.o interrupts.o spritelayers.o demo.o
+	$(CC) $(CFLAGS) -o os.elf boot.o startup.o uart.o ports.o mmu.o system.o display.o interrupts.o spritelayers.o demo.o
 
 boot.o: boot.s
 	$(CC) $(CFLAGS) -c boot.s
@@ -23,9 +23,13 @@ display.o: display.c
 	$(CC) $(CFLAGS) -c display.c
 interrupts.o: interrupts.c
 	$(CC) $(CFLAGS) -c interrupts.c
+spritelayers.o: spritelayers.c
+	$(CC) $(CFLAGS) -c spritelayers.c
+demo.o: demo.c
+	$(CC) $(CFLAGS) -c demo.c
 
 clean:
 	rm -f *.o os.*
 
 install: os.bin
-	sunxi-fel spl ../u-boot/spl/sunxi-spl.bin write 0x40000000 os.bin exe 0x40000000
+	sunxi-fel spl ../u-boot/spl/sunxi-spl.bin write 0x4d000000 os.bin exe 0x4d000000

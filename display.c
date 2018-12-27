@@ -6,14 +6,14 @@
 
 void display_clocks_init() {
   // Set up shared and dedicated clocks for HDMI, LCD/TCON and DE2
-  PLL_DE_CTRL_REG      = (1<<31) | (1<<24) | (17<<8) | (0<<0); // 432MHz
-  PLL_VIDEO_CTRL_REG   = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
-  BUS_CLK_GATING_REG1 |= (1<<12) | (1<<11) | (1<<3); // Enable DE, HDMI, TCON0
-  BUS_SOFT_RST_REG1   |= (1<<12) | (3<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
-  DE_CLK_REG           = (1<<31) | (1<<24); // Enable DE clock, set source to PLL_DE
-  HDMI_CLK_REG         = (1<<31); // Enable HDMI clk (use PLL3)
-  HDMI_SLOW_CLK_REG    = (1<<31); // Enable HDMI slow clk
-  TCON0_CLK_REG        = (1<<31) | 1; // Enable TCON0 clk, divide by 2
+  PLL_DE_CTRL      = (1<<31) | (1<<24) | (17<<8) | (0<<0); // 432MHz
+  PLL_VIDEO_CTRL   = (1<<31) | (1<<25) | (1<<24) | (98<<8) | (7<<0); // 297MHz
+  BUS_CLK_GATING1 |= (1<<12) | (1<<11) | (1<<3); // Enable DE, HDMI, TCON0
+  BUS_SOFT_RST1   |= (1<<12) | (3<<10) | (1<<3); // De-assert reset of DE, HDMI0/1, TCON0
+  DE_CLK           = (1<<31) | (1<<24); // Enable DE clock, set source to PLL_DE
+  HDMI_CLK         = (1<<31); // Enable HDMI clk (use PLL3)
+  HDMI_SLOW_CLK    = (1<<31); // Enable HDMI slow clk
+  TCON0_CLK        = (1<<31) | 1; // Enable TCON0 clk, divide by 2
 }
 
 void hdmi_init() {
@@ -91,18 +91,18 @@ void hdmi_init() {
 }
 
 void lcd_init() {
-  LCD0_GCTL_REG         = (1<<31);
-  LCD0_GINT0_REG        = 0;
-  LCD0_TCON1_CTL_REG    = (1<<31) | (30<<4);
-  LCD0_TCON1_BASIC0_REG = (1919<<16) | 1079;
-  LCD0_TCON1_BASIC1_REG = (1919<<16) | 1079;
-  LCD0_TCON1_BASIC2_REG = (1919<<16) | 1079;
-  LCD0_TCON1_BASIC3_REG = (2199<<16) | 147;
-  LCD0_TCON1_BASIC4_REG = (2250<<16) | 35;
-  LCD0_TCON1_BASIC5_REG = (43<<16) | 4;
+  LCD0_GCTL         = (1<<31);
+  LCD0_GINT0        = 0;
+  LCD0_TCON1_CTL    = (1<<31) | (30<<4);
+  LCD0_TCON1_BASIC0 = (1919<<16) | 1079;
+  LCD0_TCON1_BASIC1 = (1919<<16) | 1079;
+  LCD0_TCON1_BASIC2 = (1919<<16) | 1079;
+  LCD0_TCON1_BASIC3 = (2199<<16) | 147;
+  LCD0_TCON1_BASIC4 = (2250<<16) | 35;
+  LCD0_TCON1_BASIC5 = (43<<16) | 4;
 }
 
-void de2_init(void* framebuffer) {
+void de2_init() {
   DE_AHB_RESET |= (1<<0);
   DE_SCLK_GATE |= (1<<0);
   DE_HCLK_GATE |= (1<<0);
@@ -116,45 +116,74 @@ void de2_init(void* framebuffer) {
   DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
 
   DE_MIXER0_BLD_FILL_COLOR_CTL = 0x100;
-  DE_MIXER0_BLD_CH_RTCTL = 1;
-  //DE_MIXER0_BLD_CTL(0) = 0x03010301;
+  DE_MIXER0_BLD_CH_RTCTL = 0;
   DE_MIXER0_BLD_SIZE = (1079<<16) | 1919;
   DE_MIXER0_BLD_CH_ISIZE(0) = (1079<<16) | 1919;
 
-  DE_MIXER0_OVL_UI1_ATTCTL(0) = (1<<0) | (4<<8);
-  DE_MIXER0_OVL_UI1_MBSIZE(0) = (269<<16) | 479;
-  DE_MIXER0_OVL_UI1_COOR(0) = 0;
-  DE_MIXER0_OVL_UI1_PITCH(0) = 1920;
-  DE_MIXER0_OVL_UI1_TOP_LADD(0) = (uint32_t)framebuffer;
-  DE_MIXER0_OVL_UI1_SIZE = (269<<16) | 479;
+  DE_MIXER0_OVL_V_ATTCTL(0) = (1<<15) | (1<<0);
+  DE_MIXER0_OVL_V_MBSIZE(0) = (269<<16) | 479;
+  DE_MIXER0_OVL_V_COOR(0) = 0;
+  DE_MIXER0_OVL_V_PITCH0(0) = 480*4;
+  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_a;
 
-  DE_MIXER0_UIS1_CTRL_REG = 1;
-  DE_MIXER0_UIS1_OUTSIZE_REG = (1079<<16) | 1919;
-  DE_MIXER0_UIS1_INSIZE_REG = (269<<16) | 479;
-  DE_MIXER0_UIS1_HSTEP_REG = 0x40000;
-  DE_MIXER0_UIS1_VSTEP_REG = 0x40000;
-  for(int n=0;n<16;n++)
-    DE_MIXER0_UIS1_HCOEF_REGN(n) = 0x00007f00;
-  DE_MIXER0_UIS1_CTRL_REG = 1 | (1<<4);
+  DE_MIXER0_OVL_V_SIZE = (269<<16) | 479;
 
+  DE_MIXER0_VS_CTRL = 1;
+  DE_MIXER0_VS_OUT_SIZE = (1079<<16) | 1919;
+  DE_MIXER0_VS_Y_SIZE = (269<<16) | 479;
+  DE_MIXER0_VS_Y_HSTEP = 0x40000;
+  DE_MIXER0_VS_Y_VSTEP = 0x40000;
+  DE_MIXER0_VS_C_SIZE = (269<<16) | 479;
+  DE_MIXER0_VS_C_HSTEP = 0x40000;
+  DE_MIXER0_VS_C_VSTEP = 0x40000;
+  for(int n=0;n<32;n++) {
+    DE_MIXER0_VS_Y_HCOEF0(n) = 0x40000000;
+    DE_MIXER0_VS_Y_HCOEF1(n) = 0;
+    DE_MIXER0_VS_Y_VCOEF(n)  = 0x00004000;
+    DE_MIXER0_VS_C_HCOEF0(n) = 0x40000000;
+    DE_MIXER0_VS_C_HCOEF1(n) = 0;
+    DE_MIXER0_VS_C_VCOEF(n)  = 0x00004000;
+  }
+  DE_MIXER0_VS_CTRL = 1 | (1<<4);
   DE_MIXER0_GLB_DBUFFER = 1;
 }
 
 // This function initializes the HDMI port and TCON.
 // Almost everything here is resolution specific and
 // currently hardcoded to 1920x1080@60Hz.
-void display_init(uint32_t* framebuffer) {
-  // Clear display memory
-  for(int n=0; n<0x200000; n++) {
-    framebuffer[n] = 0xff000000;
-    if((n%480)&2) framebuffer[n] |= 0x00ff0000;
-    if((n/480)&2) framebuffer[n] |= 0x000000ff;
-  }
+void display_init(volatile uint32_t* vram) {
+  framebuffer_a = vram;
+  framebuffer_b = vram + 0x80000;
+  framebuffer_active = framebuffer_a;
+  cls();
 
   display_clocks_init();
   hdmi_init();
   lcd_init();
-  de2_init(framebuffer);
+  de2_init();
 
-  LCD0_GINT0_REG = (1<<30);
+  LCD0_GINT0 = (1<<30);
+}
+
+volatile uint32_t* active_framebuffer() {
+  return framebuffer_active;
+}
+
+void cls() {
+  // Clear active display buffer
+  volatile uint32_t* fb = active_framebuffer();
+  for(int n=0; n<480*270; n++) {
+    fb[n] = 0xff000000;
+  }
+}
+
+void display_buffer_swap() {
+  if(framebuffer_active == framebuffer_a) {
+    DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_a;
+    framebuffer_active = framebuffer_b;
+  } else {
+    DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_b;
+    framebuffer_active = framebuffer_a;
+  }
+  DE_MIXER0_GLB_DBUFFER = 1;
 }
