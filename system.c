@@ -1,7 +1,7 @@
 #include "system.h"
 
 void udelay(uint32_t d) {
-  for(int n=0;n<d*2;n++) asm("NOP");
+  for(int n=0;n<d*200;n++) asm("NOP");
 }
 
 void reboot(uint32_t seconds) {

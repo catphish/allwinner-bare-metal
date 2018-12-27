@@ -147,4 +147,4 @@ void display_buffer_swap();
 
 volatile uint32_t* framebuffer_a;
 volatile uint32_t* framebuffer_b;
-volatile uint32_t* framebuffer_active;
+volatile uint32_t* framebuffer_back;

@@ -4,6 +4,7 @@
 #include "system.h"
 #include "display.h"
 #include "interrupts.h"
+#include "ccu.h"
 
 uint32_t tick_counter;
 
@@ -11,6 +12,7 @@ void game_tick(uint32_t tick_counter);
 void game_start();
 
 void startup() {
+
   tick_counter = 0;
 
   // Reboot in n seconds using watchdog
@@ -32,6 +34,13 @@ void startup() {
 
   // Configure display
   display_init((volatile uint32_t*)(0x60000000-VIDEO_RAM_BYTES));
+
+  uart_print("PLL_CPUX_CTRL: 0x");
+  uart_print_uint32(PLL_CPUX_CTRL);
+  uart_print("\r\n");
+  uart_print("CPUX_AXI_CFG: 0x");
+  uart_print_uint32(CPUX_AXI_CFG);
+  uart_print("\r\n");
 
   uart_print("Ready!\r\n");
   game_start();

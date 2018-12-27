@@ -100,6 +100,9 @@ void lcd_init() {
   LCD0_TCON1_BASIC3 = (2199<<16) | 147;
   LCD0_TCON1_BASIC4 = (2250<<16) | 35;
   LCD0_TCON1_BASIC5 = (43<<16) | 4;
+  
+  LCD0_GINT1 = 1;
+  LCD0_GINT0 = (1<<28);
 }
 
 void de2_init() {
@@ -124,7 +127,7 @@ void de2_init() {
   DE_MIXER0_OVL_V_MBSIZE(0) = (269<<16) | 479;
   DE_MIXER0_OVL_V_COOR(0) = 0;
   DE_MIXER0_OVL_V_PITCH0(0) = 480*4;
-  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_a;
+  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_b;
 
   DE_MIXER0_OVL_V_SIZE = (269<<16) | 479;
 
@@ -154,19 +157,19 @@ void de2_init() {
 void display_init(volatile uint32_t* vram) {
   framebuffer_a = vram;
   framebuffer_b = vram + 0x80000;
-  framebuffer_active = framebuffer_a;
+  framebuffer_back = framebuffer_a;
+  cls();
+  framebuffer_back = framebuffer_b;
   cls();
 
   display_clocks_init();
   hdmi_init();
   lcd_init();
   de2_init();
-
-  LCD0_GINT0 = (1<<30);
 }
 
 volatile uint32_t* active_framebuffer() {
-  return framebuffer_active;
+  return framebuffer_back;
 }
 
 void cls() {
@@ -178,12 +181,12 @@ void cls() {
 }
 
 void display_buffer_swap() {
-  if(framebuffer_active == framebuffer_a) {
+  if(framebuffer_back == framebuffer_b) {
     DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_a;
-    framebuffer_active = framebuffer_b;
+    framebuffer_back = framebuffer_a;
   } else {
     DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_b;
-    framebuffer_active = framebuffer_a;
+    framebuffer_back = framebuffer_b;
   }
   DE_MIXER0_GLB_DBUFFER = 1;
 }

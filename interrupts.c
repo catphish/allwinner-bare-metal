@@ -9,9 +9,8 @@ void game_tick_next();
 // Called when an interrupt is triggered
 // Currently this is always triggered by at new frame at 60Hz
 void __attribute__((interrupt("FIQ"))) interrupt(void) {
-
-  LCD0_GINT0 &= ~(1<<14);
   game_tick_next();
+  LCD0_GINT0 &= ~(1<<12);
 }
 
 // Copy the interrupt table from _ivt to 0x0
