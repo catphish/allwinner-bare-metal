@@ -1,6 +1,6 @@
 CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
-CFLAGS=-T linker.ld -mcpu=cortex-a7 -fpic -ffreestanding -O2 -nostdlib
+CFLAGS=-T linker.ld -mfpu=neon -mfloat-abi=hard -mcpu=cortex-a7 -fpic -ffreestanding -O2 -nostdlib
 
 os.bin: os.elf
 	$(OBJCOPY) -O binary os.elf os.bin

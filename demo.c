@@ -2,6 +2,7 @@
 #include "spritelayers.h"
 #include "display.h"
 #include "demo_data.h"
+#include "uart.h"
 
 // A quick demo of the graphics engine
 uint32_t x, y;
@@ -21,8 +22,7 @@ void game_tick(uint32_t tick_counter) {
     .y_offset = y,
     .next = 0
   };
-
-  for(int n=0;n<1000;n++)
+  for(int n=0;n<10000;n++)
     render_sprites(&demo_sprite_list);
 
   x+=direction_x; y+=direction_y;

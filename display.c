@@ -101,7 +101,7 @@ void lcd_init() {
   LCD0_TCON1_BASIC4 = (2250<<16) | 35;
   LCD0_TCON1_BASIC5 = (43<<16) | 4;
   
-  LCD0_GINT1 = 1;
+  LCD0_GINT1 = 1080;
   LCD0_GINT0 = (1<<28);
 }
 
@@ -182,10 +182,10 @@ void cls() {
 
 void display_buffer_swap() {
   if(framebuffer_back == framebuffer_b) {
-    DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_a;
+    DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_b;
     framebuffer_back = framebuffer_a;
   } else {
-    DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_b;
+    DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_a;
     framebuffer_back = framebuffer_b;
   }
   DE_MIXER0_GLB_DBUFFER = 1;
