@@ -13,7 +13,7 @@ void mmu_init() {
     {
       // SRAM.  Write back.
       pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (3<<2) | 2;
-    } else if(n==0x5ff) {
+    } else if(n==0x5ff || n==0x5fe) {
       // Video DRAM. Normal uncached.
       pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (0<<2) | 2;
     } else if(n>=0x400 && n<0x600) {

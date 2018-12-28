@@ -1,4 +1,4 @@
-#define VIDEO_RAM_BYTES 0x100000
+#define VIDEO_RAM_BYTES 0x180000
 
 // The HDMI registers base address.
 #define HDMI_BASE 0x01EE0000
@@ -141,10 +141,10 @@
 #define DE_MIXER0_VS_C_VCOEF(x)       *(volatile uint32_t*)(DE_MIXER0_VS_BASE + 0x800 + x * 4)
 
 void display_init(volatile uint32_t* framebuffer);
-volatile uint32_t* active_framebuffer();
 void cls();
 void display_buffer_swap();
 
 volatile uint32_t* framebuffer_a;
 volatile uint32_t* framebuffer_b;
+volatile uint32_t* framebuffer_c;
 volatile uint32_t* framebuffer_back;

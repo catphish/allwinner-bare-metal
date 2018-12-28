@@ -127,7 +127,7 @@ void de2_init() {
   DE_MIXER0_OVL_V_MBSIZE(0) = (269<<16) | 479;
   DE_MIXER0_OVL_V_COOR(0) = 0;
   DE_MIXER0_OVL_V_PITCH0(0) = 480*4;
-  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_b;
+  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_a;
 
   DE_MIXER0_OVL_V_SIZE = (269<<16) | 479;
 
@@ -156,11 +156,9 @@ void de2_init() {
 // currently hardcoded to 1920x1080@60Hz.
 void display_init(volatile uint32_t* vram) {
   framebuffer_a = vram;
-  framebuffer_b = vram + 0x80000;
-  framebuffer_back = framebuffer_a;
-  cls();
+  framebuffer_b = vram + 0x080000;
+  framebuffer_c = vram + 0x100000;
   framebuffer_back = framebuffer_b;
-  cls();
 
   display_clocks_init();
   hdmi_init();
@@ -168,21 +166,19 @@ void display_init(volatile uint32_t* vram) {
   de2_init();
 }
 
-volatile uint32_t* active_framebuffer() {
-  return framebuffer_back;
-}
-
 void cls() {
   // Clear active display buffer
-  volatile uint32_t* fb = active_framebuffer();
   for(int n=0; n<480*270; n++) {
-    fb[n] = 0xff000000;
+    framebuffer_back[n] = 0xff000000;
   }
 }
 
 void display_buffer_swap() {
   if(framebuffer_back == framebuffer_b) {
     DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_b;
+    framebuffer_back = framebuffer_c;
+  } else if (framebuffer_back == framebuffer_c) {
+    DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_c;
     framebuffer_back = framebuffer_a;
   } else {
     DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_a;
