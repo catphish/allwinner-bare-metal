@@ -8,3 +8,4 @@ struct sprite_list {
 };
 
 void render_sprites(struct sprite_list* list);
+void cls();

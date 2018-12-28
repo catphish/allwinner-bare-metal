@@ -35,13 +35,6 @@ void startup() {
   // Configure display
   display_init((volatile uint32_t*)(0x60000000-VIDEO_RAM_BYTES));
 
-  uart_print("PLL_CPUX_CTRL: 0x");
-  uart_print_uint32(PLL_CPUX_CTRL);
-  uart_print("\r\n");
-  uart_print("CPUX_AXI_CFG: 0x");
-  uart_print_uint32(CPUX_AXI_CFG);
-  uart_print("\r\n");
-
   uart_print("Ready!\r\n");
   game_start();
 
@@ -52,7 +45,6 @@ void startup() {
 }
 
 void game_tick_next() {
-  display_buffer_swap();
-  cls();
   game_tick(tick_counter);
+  display_buffer_swap();
 }

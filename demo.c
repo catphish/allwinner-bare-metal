@@ -22,7 +22,9 @@ void game_tick(uint32_t tick_counter) {
     .y_offset = y,
     .next = 0
   };
+
   // Sprite rendering performance test. 5 full layers.
+  cls();
   for(int n=0;n<(32*19*5);n++)
     render_sprites(&demo_sprite_list);
 

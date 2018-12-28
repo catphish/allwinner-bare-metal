@@ -141,7 +141,6 @@
 #define DE_MIXER0_VS_C_VCOEF(x)       *(volatile uint32_t*)(DE_MIXER0_VS_BASE + 0x800 + x * 4)
 
 void display_init(volatile uint32_t* framebuffer);
-void cls();
 void display_buffer_swap();
 
 volatile uint32_t* framebuffer_a;

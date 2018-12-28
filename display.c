@@ -166,13 +166,6 @@ void display_init(volatile uint32_t* vram) {
   de2_init();
 }
 
-void cls() {
-  // Clear active display buffer
-  for(int n=0; n<480*270; n++) {
-    framebuffer_back[n] = 0xff000000;
-  }
-}
-
 void display_buffer_swap() {
   if(framebuffer_back == framebuffer_b) {
     DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer_b;
