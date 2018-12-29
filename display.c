@@ -87,7 +87,6 @@ void hdmi_init() {
   HDMI_MC_FLOWCTRL   = 0;    // Main Controller Feed Through Control
   HDMI_MC_CLKDIS     = 0x7e; // Main Controller Synchronous Clock Domain Disable
   HDMI_MC_CLKDIS     = 0x7c; // Main Controller Synchronous Clock Domain Disable
-
 }
 
 void lcd_init() {

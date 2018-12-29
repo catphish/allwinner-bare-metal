@@ -1,11 +1,13 @@
 #include <stdint.h>
 
-struct sprite_list {
-  uint32_t* sprite_data;
+struct sprite_layer {
+  uint32_t** pattern;
+  uint32_t x_size;
+  uint32_t y_size;
   int32_t x_offset;
   int32_t y_offset;
-  struct sprite_list* next;
 };
 
-void render_sprites(struct sprite_list* list);
-void cls();
+void render_layer(struct sprite_layer* layer);
+void render_sprite(uint32_t* pattern, int32_t x, int32_t y);
+void fill(uint32_t color);

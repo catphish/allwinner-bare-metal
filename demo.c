@@ -4,33 +4,43 @@
 #include "demo_data.h"
 #include "uart.h"
 
-// A quick demo of the graphics engine
-uint32_t x, y;
-uint32_t direction_x, direction_y;
+int32_t abs(int32_t i) {
+  return(i < 0 ? 0 - i : i);
+}
 
 void game_start() {
-  x = 0;
-  y = 0;
-  direction_x = 3;
-  direction_y = 2;
+  
 }
 
 void game_tick(uint32_t tick_counter) {
-  struct sprite_list demo_sprite_list = {
-    .sprite_data = (uint32_t*)demo_sprite,
-    .x_offset = x,
-    .y_offset = y,
-    .next = 0
+  uint32_t** pattern = (uint32_t**)0x50000000;
+  for(int n=0;n<1024;n++)
+    pattern[n] = demo_sprite;
+
+  for(int n=0;n<480*270;n++)
+    framebuffer_back[n]=0;
+
+  fill(0xff008080);
+
+  struct sprite_layer background = {
+    .pattern = pattern,
+    .x_size = 32,
+    .y_size = 6,
+    .x_offset = -((tick_counter/4)%16),
+    .y_offset = 0,
   };
+  render_layer(&background);
 
-  // Sprite rendering performance test. 5 full layers.
-  cls();
-  for(int n=0;n<(32*19*5);n++)
-    render_sprites(&demo_sprite_list);
+  struct sprite_layer foreground = {
+    .pattern = pattern,
+    .x_size = 32,
+    .y_size = 6,
+    .x_offset = -((tick_counter/2)%16),
+    .y_offset = 120,
+  };
+  render_layer(&foreground);
 
-  x+=direction_x; y+=direction_y;
-  if(x<=0)      direction_x =  3;
-  if(x>=480-16) direction_x = -3;
-  if(y<=0)      direction_y =  2;
-  if(y>=270-16) direction_y = -2;
+  uint32_t y = abs((tick_counter % 200) - 100);
+  render_sprite(demo_sprite, 230, 100+y);
+
 }
