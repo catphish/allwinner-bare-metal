@@ -5,4 +5,9 @@ SECTIONS
     boot.o(.text)
     *(.text)
   }
+  .bss : {
+    _bstart = . ;
+    *(.bss); *(COMMON);
+     _bend = . ;
+  }
 }

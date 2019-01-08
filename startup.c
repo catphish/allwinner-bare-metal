@@ -13,8 +13,7 @@ void game_tick(uint32_t tick_counter);
 void game_start();
 
 void startup() {
-
-  tick_counter = 0;
+  init_bss();
 
   // Reboot in n seconds using watchdog
   reboot(3); // 0x8 == 10 second reset timer
