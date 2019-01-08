@@ -5,6 +5,7 @@
 #include "display.h"
 #include "interrupts.h"
 #include "ccu.h"
+#include "usb.h"
 
 uint32_t tick_counter;
 
@@ -16,7 +17,7 @@ void startup() {
   tick_counter = 0;
 
   // Reboot in n seconds using watchdog
-  reboot(8); // 0x8 == 10 second reset timer
+  reboot(3); // 0x8 == 10 second reset timer
 
   // Enble all GPIO
   gpio_init();
@@ -34,6 +35,9 @@ void startup() {
 
   // Configure display
   display_init((volatile uint32_t*)(0x60000000-VIDEO_RAM_BYTES));
+
+  // USB
+  usb_init();
 
   uart_print("Ready!\r\n");
   game_start();
