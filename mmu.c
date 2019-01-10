@@ -18,7 +18,7 @@ void mmu_init() {
       pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (0<<2) | 2;
     } else if(n>=0x400 && n<0x600) {
       // Remaining DRAM. Write back.
-      pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (3<<2) | 2;
+      pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (0<<2) | 2;
     } else {
       // Other stuff. Strictly ordered for safety.
       pagetable[n] = (n<<20) | (0<<12) | (3<<10) | (0<<2) | 2;

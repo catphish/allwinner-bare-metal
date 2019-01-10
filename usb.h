@@ -47,11 +47,12 @@
 #define USB1_HCI_ICR               *(volatile uint32_t *)(USB1_BASE + 0x800)
 #define USB1_HSIC_STATUS           *(volatile uint32_t *)(USB1_BASE + 0x804)
 
-// struct td {
-//   uint32_t info;
-//   uint32_t cbp;
-//   uint32_t nexttd;
-// } __attribute__ ((aligned (16)));
+struct td {
+  uint32_t info;
+  uint32_t cbp;
+  uint32_t nexttd;
+  uint32_t bufferend;
+} __attribute__ ((aligned (16)));
 
 struct ed {
   uint32_t info;
@@ -67,8 +68,5 @@ struct hcca {
   uint32_t HccaDoneHead;
   uint8_t reserved[120];
 } __attribute__ ((aligned (256)));
-
-struct hcca hcca;
-struct ed ed[5];
 
 void usb_init();
