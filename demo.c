@@ -13,34 +13,16 @@ void game_start() {
 }
 
 void game_tick(uint32_t tick_counter) {
-  uint32_t** pattern = (uint32_t**)0x50000000;
-  for(int n=0;n<1024;n++)
-    pattern[n] = demo_sprite;
+  for(int n=0; n<480*270; n++)
+    framebuffer[n] = 0xff0000ff;
 
-  for(int n=0;n<480*270;n++)
-    framebuffer_back[n]=0;
-
-  fill(0xff008080);
-
-  struct sprite_layer background = {
-    .pattern = pattern,
-    .x_size = 32,
-    .y_size = 6,
-    .x_offset = -((tick_counter/4)%16),
-    .y_offset = 0,
-  };
-  render_layer(&background);
-
-  struct sprite_layer foreground = {
-    .pattern = pattern,
-    .x_size = 32,
-    .y_size = 6,
-    .x_offset = -((tick_counter/2)%16),
-    .y_offset = 120,
-  };
-  render_layer(&foreground);
-
-  uint32_t y = abs((tick_counter % 200) - 100);
-  render_sprite(demo_sprite, 230, 100+y);
-
+  //   DE_WB_STATUS = 0xffffffff;
+  //   DE_WB_GCTRL |= 1;
+    
+  // uart_print_uint32(framebuffer2[1]);
+  // uart_print(" ");
+  // uart_print_uint32(DE_WB_STATUS);
+  // uart_print(" ");
+  // uart_print_uint32(DE_WB_DEBUG);
+  // uart_print("\r\n");
 }

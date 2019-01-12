@@ -140,10 +140,36 @@
 #define DE_MIXER0_VS_C_HCOEF1(x)      *(volatile uint32_t*)(DE_MIXER0_VS_BASE + 0x700 + x * 4)
 #define DE_MIXER0_VS_C_VCOEF(x)       *(volatile uint32_t*)(DE_MIXER0_VS_BASE + 0x800 + x * 4)
 
-void display_init(volatile uint32_t* framebuffer);
-void display_buffer_swap();
+#define DE_WB                         (DE_BASE + 0x10000)
+#define DE_WB_GCTRL                   *(volatile uint32_t*)(DE_WB + 0x000)
+#define DE_WB_SIZE                    *(volatile uint32_t*)(DE_WB + 0x004)
+#define DE_WB_CROP_COORD              *(volatile uint32_t*)(DE_WB + 0x008)
+#define DE_WB_CROP_SIZE               *(volatile uint32_t*)(DE_WB + 0x00C)
+#define DE_WB_A_CH0_ADDR              *(volatile uint32_t*)(DE_WB + 0x010)
+#define DE_WB_A_CH1_ADDR              *(volatile uint32_t*)(DE_WB + 0x014)
+#define DE_WB_A_CH2_ADDR              *(volatile uint32_t*)(DE_WB + 0x018)
+#define DE_WB_A_HIGH_ADDR             *(volatile uint32_t*)(DE_WB + 0x01C)
+#define DE_WB_B_CH0_ADDR              *(volatile uint32_t*)(DE_WB + 0x020)
+#define DE_WB_B_CH1_ADDR              *(volatile uint32_t*)(DE_WB + 0x024)
+#define DE_WB_B_CH2_ADDR              *(volatile uint32_t*)(DE_WB + 0x028)
+#define DE_WB_B_HIGH_ADDR             *(volatile uint32_t*)(DE_WB + 0x02C)
+#define DE_WB_CH0_PITCH               *(volatile uint32_t*)(DE_WB + 0x030)
+#define DE_WB_CH12_PITCH              *(volatile uint32_t*)(DE_WB + 0x034)
+#define DE_WB_ADDR_SWITCH             *(volatile uint32_t*)(DE_WB + 0x040)
+#define DE_WB_FORMAT                  *(volatile uint32_t*)(DE_WB + 0x044)
+#define DE_WB_INT                     *(volatile uint32_t*)(DE_WB + 0x048)
+#define DE_WB_STATUS                  *(volatile uint32_t*)(DE_WB + 0x04C)
+#define DE_WB_BYPASS                  *(volatile uint32_t*)(DE_WB + 0x054)
+#define DE_WB_CS_HORZ                 *(volatile uint32_t*)(DE_WB + 0x070)
+#define DE_WB_CS_VERT                 *(volatile uint32_t*)(DE_WB + 0x074)
+#define DE_WB_FS_INSIZE               *(volatile uint32_t*)(DE_WB + 0x080)
+#define DE_WB_FS_OUTSIZE              *(volatile uint32_t*)(DE_WB + 0x084)
+#define DE_WB_FS_HSTEP                *(volatile uint32_t*)(DE_WB + 0x088)
+#define DE_WB_FS_VSTEP                *(volatile uint32_t*)(DE_WB + 0x08C)
+#define DE_WB_DEBUG                   *(volatile uint32_t*)(DE_WB + 0x0FC)
+#define DE_WB_CH0_HCOEF(x)            *(volatile uint32_t*)(DE_WB + 0x200 + x * 4)
+#define DE_WB_CH1_HCOEFN(x)           *(volatile uint32_t*)(DE_WB + 0x280 + x * 4)
 
-volatile uint32_t* framebuffer_a;
-volatile uint32_t* framebuffer_b;
-volatile uint32_t* framebuffer_c;
-volatile uint32_t* framebuffer_back;
+void display_init();
+volatile uint32_t* framebuffer;
+volatile uint32_t* framebuffer2;
