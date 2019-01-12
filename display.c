@@ -67,16 +67,16 @@ void hdmi_init() {
   HDMI_FC_INHBLANK0 = (280 & 0xff);     // Horizontal blanking
   HDMI_FC_INHBLANK1 = (280 >> 8);       // Horizontal blanking
 
-  HDMI_FC_INVACTIV0 = (1079 & 0xff);    // Vertical pixels
-  HDMI_FC_INVACTIV1 = (1079 >> 8);      // Vertical pixels
-  HDMI_FC_INVBLANK  = 44;               // Vertical blanking
+  HDMI_FC_INVACTIV0 = (1080 & 0xff);    // Vertical pixels
+  HDMI_FC_INVACTIV1 = (1080 >> 8);      // Vertical pixels
+  HDMI_FC_INVBLANK  = 45;               // Vertical blanking
 
-  HDMI_FC_HSYNCINDELAY0 = (87 & 0xff);  // Horizontal Front porch
-  HDMI_FC_HSYNCINDELAY1 = (87 >> 8);    // Horizontal Front porch
-  HDMI_FC_VSYNCINDELAY  = 3;            // Vertical front porch
-  HDMI_FC_HSYNCINWIDTH0 = (43 & 0xff);  // Horizontal sync pulse
-  HDMI_FC_HSYNCINWIDTH1 = (43 >> 8);    // Horizontal sync pulse
-  HDMI_FC_VSYNCINWIDTH  = 4;            // Vertical sync pulse
+  HDMI_FC_HSYNCINDELAY0 = (88 & 0xff);  // Horizontal Front porch
+  HDMI_FC_HSYNCINDELAY1 = (88 >> 8);    // Horizontal Front porch
+  HDMI_FC_VSYNCINDELAY  = 4;            // Vertical front porch
+  HDMI_FC_HSYNCINWIDTH0 = (44 & 0xff);  // Horizontal sync pulse
+  HDMI_FC_HSYNCINWIDTH1 = (44 >> 8);    // Horizontal sync pulse
+  HDMI_FC_VSYNCINWIDTH  = 5;            // Vertical sync pulse
 
   HDMI_FC_CTRLDUR    = 12;   // Frame Composer Control Period Duration
   HDMI_FC_EXCTRLDUR  = 32;   // Frame Composer Extended Control Period Duration
@@ -85,9 +85,9 @@ void hdmi_init() {
   HDMI_FC_CH1PREAM   = 0x16; // Frame Composer Channel 1 Non-Preamble Data
   HDMI_FC_CH2PREAM   = 0x21; // Frame Composer Channel 2 Non-Preamble Data
   HDMI_MC_FLOWCTRL   = 0;    // Main Controller Feed Through Control
-  HDMI_MC_CLKDIS     = 0x7e; // Main Controller Synchronous Clock Domain Disable
-  HDMI_MC_CLKDIS     = 0x7c; // Main Controller Synchronous Clock Domain Disable
+  HDMI_MC_CLKDIS     = 0x74; // Main Controller Synchronous Clock Domain Disable
 }
+
 
 void lcd_init() {
   LCD0_GCTL         = (1<<31);
@@ -96,8 +96,8 @@ void lcd_init() {
   LCD0_TCON1_BASIC0 = (1919<<16) | 1079;
   LCD0_TCON1_BASIC1 = (1919<<16) | 1079;
   LCD0_TCON1_BASIC2 = (1919<<16) | 1079;
-  LCD0_TCON1_BASIC3 = (2199<<16) | 147;
-  LCD0_TCON1_BASIC4 = (2250<<16) | 35;
+  LCD0_TCON1_BASIC3 = (2199<<16) | 191;
+  LCD0_TCON1_BASIC4 = (2250<<16) | 40;
   LCD0_TCON1_BASIC5 = (43<<16) | 4;
   
   LCD0_GINT1 = 1080;
@@ -127,26 +127,8 @@ void de2_init() {
   DE_MIXER0_OVL_V_COOR(0) = 0;
   DE_MIXER0_OVL_V_PITCH0(0) = 480*4;
   DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer;
+  DE_MIXER0_OVL_V_SIZE = (1079<<16) | 1919;
 
-  DE_MIXER0_OVL_V_SIZE = (269<<16) | 479;
-
-  DE_MIXER0_VS_CTRL = 1;
-  DE_MIXER0_VS_OUT_SIZE = (1079<<16) | 1919;
-  DE_MIXER0_VS_Y_SIZE = (269<<16) | 479;
-  DE_MIXER0_VS_Y_HSTEP = 0x40000;
-  DE_MIXER0_VS_Y_VSTEP = 0x40000;
-  DE_MIXER0_VS_C_SIZE = (269<<16) | 479;
-  DE_MIXER0_VS_C_HSTEP = 0x40000;
-  DE_MIXER0_VS_C_VSTEP = 0x40000;
-  for(int n=0;n<32;n++) {
-    DE_MIXER0_VS_Y_HCOEF0(n) = 0x40000000;
-    DE_MIXER0_VS_Y_HCOEF1(n) = 0;
-    DE_MIXER0_VS_Y_VCOEF(n)  = 0x00004000;
-    DE_MIXER0_VS_C_HCOEF0(n) = 0x40000000;
-    DE_MIXER0_VS_C_HCOEF1(n) = 0;
-    DE_MIXER0_VS_C_VCOEF(n)  = 0x00004000;
-  }
-  DE_MIXER0_VS_CTRL = 1 | (1<<4);
   DE_MIXER0_GLB_DBUFFER = 1;
 
 }
