@@ -105,16 +105,18 @@ void lcd_init() {
 }
 
 void de2_init() {
-  DE_AHB_RESET |= (1<<0);
-  DE_SCLK_GATE |= (1<<0);
-  DE_HCLK_GATE |= (1<<0);
+  DE_AHB_RESET |= (1<<0) | (1<<1) | (1<<2);
+  DE_SCLK_GATE |= (1<<0) | (1<<1) | (1<<2);
+  DE_HCLK_GATE |= (1<<0) | (1<<1) | (1<<2);
+  DE_SCLK_DIV = 0;
+
   DE_DE2TCON_MUX &= ~(1<<0);
 
   // Erase the whole of MIXER0. This contains uninitialized data.
   for(uint32_t addr = DE_MIXER0 + 0x0000; addr < DE_MIXER0 + 0xC000; addr += 4)
    *(volatile uint32_t*)(addr) = 0;
 
-  DE_MIXER0_GLB_CTL = 1;
+  DE_MIXER0_GLB_CTL = 1 | (1<<12);
   DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
 
   DE_MIXER0_BLD_FILL_COLOR_CTL = 0x100;
@@ -131,14 +133,30 @@ void de2_init() {
 
   DE_MIXER0_GLB_DBUFFER = 1;
 
+  // Erase the whole of WB.
+  for(uint32_t addr = DE_WB; addr < DE_WB + 0x10000; addr += 4)
+    *(volatile uint32_t*)(addr) = 0;
+
+  DE_WB_GCTRL = (1<<29);                     // Enable WB clock
+  DE_WB_SIZE = (1079<<16) | 1919;            // Set WB input size (1920x1080)
+  DE_WB_CROP_COORD = 0;                      // Set crop offset to 0,0
+  DE_WB_CROP_SIZE = (1079<<16) | 1919;       // Set crop dimensions to 1920x1080
+  DE_WB_A_CH0_ADDR = (uint32_t)framebuffer2; // Write date to framebuffer2
+  DE_WB_CH0_PITCH = 1920*4;                  // Pitch in bytes
+  DE_WB_FORMAT = 4;                          // aRGB
+  DE_WB_FS_HSTEP = 1<<20;
+  DE_WB_FS_VSTEP = 1<<20;
+  DE_WB_FS_INSIZE = (1079<<16) | 1919;
+  DE_WB_FS_OUTSIZE = (1079<<16) | 1919;
 }
 
 // This function initializes the HDMI port and TCON.
 // Almost everything here is resolution specific and
 // currently hardcoded to 1920x1080@60Hz.
 void display_init() {
-  framebuffer = (uint32_t*)0x50000000;
+  framebuffer  = (uint32_t*)0x50000000;
   framebuffer2 = (uint32_t*)0x51000000;
+
   display_clocks_init();
   hdmi_init();
   lcd_init();
