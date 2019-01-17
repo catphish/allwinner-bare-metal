@@ -2,11 +2,6 @@
 #include "spritelayers.h"
 #include "display.h"
 
-void fill(uint32_t color) {
-  for(int n=0;n<480*270;n++)
-    framebuffer1[n] = color;
-}
-
 void render_layer(struct sprite_layer* layer){
   for(uint32_t y=0;y<layer->y_size;y++) {
     for(uint32_t x=0;x<layer->x_size;x++) {
@@ -16,17 +11,19 @@ void render_layer(struct sprite_layer* layer){
 }
 
 void render_sprite(uint32_t* pattern, int32_t x_offset, int32_t y_offset){
+  // Add 16 to the offset such that 0,0 is the upper-left of the visible display
+  x_offset += 16;
+  y_offset += 16;
+  volatile uint32_t* destination = active_buffer + y_offset*512 + x_offset;
   for(int y=0; y<16; y++) {
     for(int x=0; x<16; x++) {
-      int32_t destination_x = x_offset + x;
-      int32_t destination_y = y_offset + y;
-      if(destination_x < 0 || destination_x > 479) continue;
-      if(destination_y < 0 || destination_y > 269) continue;
-      uint32_t source = pattern[y*16+x];
-      if(source) {
-        framebuffer1[destination_y*480+destination_x] = source;
+      if(*pattern) {
+        *destination = *pattern;
       }
+      pattern++;
+      destination++;
     }
+    destination += 512-16;
   }
 }
 

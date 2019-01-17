@@ -10,4 +10,3 @@ struct sprite_layer {
 
 void render_layer(struct sprite_layer* layer);
 void render_sprite(uint32_t* pattern, int32_t x, int32_t y);
-void fill(uint32_t color);

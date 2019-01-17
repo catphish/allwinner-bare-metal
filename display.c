@@ -130,7 +130,7 @@ void de2_init() {
   DE_MIXER0_OVL_V_MBSIZE(0) = (269<<16) | 479;
   DE_MIXER0_OVL_V_COOR(0) = 0;
   DE_MIXER0_OVL_V_PITCH0(0) = 512*4; // Scan line in bytes including overscan
-  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer1 + 512*16*4; // Start at y=16
+  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer1 + (512*16+16)*4; // Start at y=16
 
   DE_MIXER0_OVL_V_SIZE = (269<<16) | 479;
 
@@ -170,13 +170,13 @@ void display_init() {
 
 void buffer_swap() {
   if(active_buffer == framebuffer1) {
-      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer1 + 512*16*4;
+      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer1 + (512*16+16)*4;
       active_buffer = framebuffer2;
   } else if(active_buffer == framebuffer2) {
-      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer2 + 512*16*4;
+      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer2 + (512*16+16)*4;
       active_buffer = framebuffer3;
   } else {
-      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer3 + 512*16*4;
+      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer3 + (512*16+16)*4;
       active_buffer = framebuffer1;
   }
   // Blank visible area
