@@ -4,7 +4,7 @@
 
 void fill(uint32_t color) {
   for(int n=0;n<480*270;n++)
-    framebuffer[n] = color;
+    framebuffer1[n] = color;
 }
 
 void render_layer(struct sprite_layer* layer){
@@ -24,7 +24,7 @@ void render_sprite(uint32_t* pattern, int32_t x_offset, int32_t y_offset){
       if(destination_y < 0 || destination_y > 269) continue;
       uint32_t source = pattern[y*16+x];
       if(source) {
-        framebuffer[destination_y*480+destination_x] = source;
+        framebuffer1[destination_y*480+destination_x] = source;
       }
     }
   }

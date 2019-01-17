@@ -13,8 +13,14 @@ void game_start() {
 }
 
 void game_tick(uint32_t tick_counter) {
-  for(int n=0; n<480*135; n++)
-    framebuffer[n] = 0xffff0000;
-  for(int n=480*135; n<480*270; n++)
-    framebuffer[n] = 0xff00ff00;
+  //for(int test=0;test<20;test++){
+    for(int n=0; n<480*270; n++) {
+      uint32_t data = demo_sprite[n%256];
+      if(data) active_buffer[n+tick_counter] = data;
+      //active_buffer[n] = 0xff0000ff;
+    }
+  //}
+
+  // uart_print_uint32(tick_counter);
+  // uart_print("\r\n");
 }

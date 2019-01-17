@@ -7,18 +7,16 @@ void mmu_init() {
 
   // Populate the pagetable
   volatile uint32_t* pagetable = (volatile uint32_t *)0x4000;
-  for(int n=0;n<0x1000;n++)
-  {
-    if(n==0)
-    {
+  for(int n=0;n<0x1000;n++) {
+    if(n==0) {
       // SRAM.  Write back.
       pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (3<<2) | 2;
-    } else if(n==0x500 || n==0x600) {
+    } else if(n>=0x400 && n<0x500) {
+      // First half of DRAM. Write back.
+      pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (3<<2) | 2;
+    } else if(n>=0x500 && n<0x600) {
       // Video DRAM. Normal uncached.
       pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (0<<2) | 2;
-    } else if(n>=0x400 && n<0x500) {
-      // Remaining DRAM. Write back.
-      pagetable[n] = (n<<20) | (1<<12) | (3<<10) | (3<<0) | 2;
     } else {
       // Other stuff. Strictly ordered for safety.
       pagetable[n] = (n<<20) | (0<<12) | (3<<10) | (0<<2) | 2;

@@ -63,20 +63,33 @@
 #define LCD0_TCON1_BASIC4     *(volatile uint32_t*)(LCD0_BASE + 0x0A4)
 #define LCD0_TCON1_BASIC5     *(volatile uint32_t*)(LCD0_BASE + 0x0A8)
 
+#define LCD1_BASE 0x01C0D000
+#define LCD1_GCTL             *(volatile uint32_t*)(LCD1_BASE + 0x000)
+#define LCD1_GINT0            *(volatile uint32_t*)(LCD1_BASE + 0x004)
+#define LCD1_GINT1            *(volatile uint32_t*)(LCD1_BASE + 0x008)
+#define LCD1_TCON1_CTL        *(volatile uint32_t*)(LCD1_BASE + 0x090)
+#define LCD1_TCON1_BASIC0     *(volatile uint32_t*)(LCD1_BASE + 0x094)
+#define LCD1_TCON1_BASIC1     *(volatile uint32_t*)(LCD1_BASE + 0x098)
+#define LCD1_TCON1_BASIC2     *(volatile uint32_t*)(LCD1_BASE + 0x09C)
+#define LCD1_TCON1_BASIC3     *(volatile uint32_t*)(LCD1_BASE + 0x0A0)
+#define LCD1_TCON1_BASIC4     *(volatile uint32_t*)(LCD1_BASE + 0x0A4)
+#define LCD1_TCON1_BASIC5     *(volatile uint32_t*)(LCD1_BASE + 0x0A8)
+
 // DE2
 #define DE_BASE 0x01000000
-#define DE_SCLK_GATE          *(volatile uint32_t*)(DE_BASE + 0x000)
-#define DE_HCLK_GATE          *(volatile uint32_t*)(DE_BASE + 0x004)
-#define DE_AHB_RESET          *(volatile uint32_t*)(DE_BASE + 0x008)
-#define DE_SCLK_DIV           *(volatile uint32_t*)(DE_BASE + 0x00C)
-#define DE_DE2TCON_MUX        *(volatile uint32_t*)(DE_BASE + 0x010)
+#define DE_SCLK_GATE                  *(volatile uint32_t*)(DE_BASE + 0x000)
+#define DE_HCLK_GATE                  *(volatile uint32_t*)(DE_BASE + 0x004)
+#define DE_AHB_RESET                  *(volatile uint32_t*)(DE_BASE + 0x008)
+#define DE_SCLK_DIV                   *(volatile uint32_t*)(DE_BASE + 0x00C)
+#define DE_DE2TCON_MUX                *(volatile uint32_t*)(DE_BASE + 0x010)
 
-#define DE_MIXER0             (DE_BASE + 0x100000)
-#define DE_MIXER0_GLB         (DE_MIXER0 + 0x0)
-#define DE_MIXER0_GLB_CTL     *(volatile uint32_t*)(DE_MIXER0_GLB + 0x000)
-#define DE_MIXER0_GLB_STS     *(volatile uint32_t*)(DE_MIXER0_GLB + 0x004)
-#define DE_MIXER0_GLB_DBUFFER *(volatile uint32_t*)(DE_MIXER0_GLB + 0x008)
-#define DE_MIXER0_GLB_SIZE    *(volatile uint32_t*)(DE_MIXER0_GLB + 0x00C)
+// Mixer 0
+#define DE_MIXER0                     (DE_BASE + 0x100000)
+#define DE_MIXER0_GLB                 (DE_MIXER0 + 0x0)
+#define DE_MIXER0_GLB_CTL             *(volatile uint32_t*)(DE_MIXER0_GLB + 0x000)
+#define DE_MIXER0_GLB_STS             *(volatile uint32_t*)(DE_MIXER0_GLB + 0x004)
+#define DE_MIXER0_GLB_DBUFFER         *(volatile uint32_t*)(DE_MIXER0_GLB + 0x008)
+#define DE_MIXER0_GLB_SIZE            *(volatile uint32_t*)(DE_MIXER0_GLB + 0x00C)
 
 #define DE_MIXER0_BLD                 (DE_MIXER0 + 0x1000)
 #define DE_MIXER0_BLD_FILL_COLOR_CTL  *(volatile uint32_t*)(DE_MIXER0_BLD + 0x000)
@@ -140,36 +153,10 @@
 #define DE_MIXER0_VS_C_HCOEF1(x)      *(volatile uint32_t*)(DE_MIXER0_VS_BASE + 0x700 + x * 4)
 #define DE_MIXER0_VS_C_VCOEF(x)       *(volatile uint32_t*)(DE_MIXER0_VS_BASE + 0x800 + x * 4)
 
-#define DE_WB                         (DE_BASE + 0x10000)
-#define DE_WB_GCTRL                   *(volatile uint32_t*)(DE_WB + 0x000)
-#define DE_WB_SIZE                    *(volatile uint32_t*)(DE_WB + 0x004)
-#define DE_WB_CROP_COORD              *(volatile uint32_t*)(DE_WB + 0x008)
-#define DE_WB_CROP_SIZE               *(volatile uint32_t*)(DE_WB + 0x00C)
-#define DE_WB_A_CH0_ADDR              *(volatile uint32_t*)(DE_WB + 0x010)
-#define DE_WB_A_CH1_ADDR              *(volatile uint32_t*)(DE_WB + 0x014)
-#define DE_WB_A_CH2_ADDR              *(volatile uint32_t*)(DE_WB + 0x018)
-#define DE_WB_A_HIGH_ADDR             *(volatile uint32_t*)(DE_WB + 0x01C)
-#define DE_WB_B_CH0_ADDR              *(volatile uint32_t*)(DE_WB + 0x020)
-#define DE_WB_B_CH1_ADDR              *(volatile uint32_t*)(DE_WB + 0x024)
-#define DE_WB_B_CH2_ADDR              *(volatile uint32_t*)(DE_WB + 0x028)
-#define DE_WB_B_HIGH_ADDR             *(volatile uint32_t*)(DE_WB + 0x02C)
-#define DE_WB_CH0_PITCH               *(volatile uint32_t*)(DE_WB + 0x030)
-#define DE_WB_CH12_PITCH              *(volatile uint32_t*)(DE_WB + 0x034)
-#define DE_WB_ADDR_SWITCH             *(volatile uint32_t*)(DE_WB + 0x040)
-#define DE_WB_FORMAT                  *(volatile uint32_t*)(DE_WB + 0x044)
-#define DE_WB_INT                     *(volatile uint32_t*)(DE_WB + 0x048)
-#define DE_WB_STATUS                  *(volatile uint32_t*)(DE_WB + 0x04C)
-#define DE_WB_BYPASS                  *(volatile uint32_t*)(DE_WB + 0x054)
-#define DE_WB_CS_HORZ                 *(volatile uint32_t*)(DE_WB + 0x070)
-#define DE_WB_CS_VERT                 *(volatile uint32_t*)(DE_WB + 0x074)
-#define DE_WB_FS_INSIZE               *(volatile uint32_t*)(DE_WB + 0x080)
-#define DE_WB_FS_OUTSIZE              *(volatile uint32_t*)(DE_WB + 0x084)
-#define DE_WB_FS_HSTEP                *(volatile uint32_t*)(DE_WB + 0x088)
-#define DE_WB_FS_VSTEP                *(volatile uint32_t*)(DE_WB + 0x08C)
-#define DE_WB_DEBUG                   *(volatile uint32_t*)(DE_WB + 0x0FC)
-#define DE_WB_CH0_HCOEF(x)            *(volatile uint32_t*)(DE_WB + 0x200 + x * 4)
-#define DE_WB_CH1_HCOEFN(x)           *(volatile uint32_t*)(DE_WB + 0x280 + x * 4)
-
 void display_init();
-volatile uint32_t* framebuffer;
+void buffer_swap();
+
+volatile uint32_t* framebuffer1;
 volatile uint32_t* framebuffer2;
+volatile uint32_t* framebuffer3;
+volatile uint32_t* active_buffer;

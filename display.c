@@ -13,7 +13,7 @@ void display_clocks_init() {
   DE_CLK           = (1<<31) | (1<<24); // Enable DE clock, set source to PLL_DE
   HDMI_CLK         = (1<<31); // Enable HDMI clk (use PLL3)
   HDMI_SLOW_CLK    = (1<<31); // Enable HDMI slow clk
-  TCON0_CLK        = (1<<31) | 1; // Enable TCON0 clk, divide by 2
+  TCON0_CLK        = (1<<31) | 3; // Enable TCON0 clk, divide by 4
 }
 
 void hdmi_init() {
@@ -88,8 +88,8 @@ void hdmi_init() {
   HDMI_MC_CLKDIS     = 0x74; // Main Controller Synchronous Clock Domain Disable
 }
 
-
 void lcd_init() {
+  // LCD0 feeds mixer0 to HDMI
   LCD0_GCTL         = (1<<31);
   LCD0_GINT0        = 0;
   LCD0_TCON1_CTL    = (1<<31) | (30<<4);
@@ -104,19 +104,19 @@ void lcd_init() {
   LCD0_GINT0 = (1<<28);
 }
 
+// This function configured DE2 as follows:
+// MIXER0 -> WB -> MIXER1 -> HDMI
 void de2_init() {
-  DE_AHB_RESET |= (1<<0) | (1<<1) | (1<<2);
-  DE_SCLK_GATE |= (1<<0) | (1<<1) | (1<<2);
-  DE_HCLK_GATE |= (1<<0) | (1<<1) | (1<<2);
-  DE_SCLK_DIV = 0;
-
+  DE_AHB_RESET |= (1<<0);
+  DE_SCLK_GATE |= (1<<0);
+  DE_HCLK_GATE |= (1<<0);
   DE_DE2TCON_MUX &= ~(1<<0);
 
   // Erase the whole of MIXER0. This contains uninitialized data.
   for(uint32_t addr = DE_MIXER0 + 0x0000; addr < DE_MIXER0 + 0xC000; addr += 4)
    *(volatile uint32_t*)(addr) = 0;
 
-  DE_MIXER0_GLB_CTL = 1 | (1<<12);
+  DE_MIXER0_GLB_CTL = 1;
   DE_MIXER0_GLB_SIZE = (1079<<16) | 1919;
 
   DE_MIXER0_BLD_FILL_COLOR_CTL = 0x100;
@@ -124,41 +124,63 @@ void de2_init() {
   DE_MIXER0_BLD_SIZE = (1079<<16) | 1919;
   DE_MIXER0_BLD_CH_ISIZE(0) = (1079<<16) | 1919;
 
+  // The output takes a 480x270 area from a total 512x302
+  // buffer leaving a 16px overscan on all 4 sides.
   DE_MIXER0_OVL_V_ATTCTL(0) = (1<<15) | (1<<0);
   DE_MIXER0_OVL_V_MBSIZE(0) = (269<<16) | 479;
   DE_MIXER0_OVL_V_COOR(0) = 0;
-  DE_MIXER0_OVL_V_PITCH0(0) = 480*4;
-  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer;
-  DE_MIXER0_OVL_V_SIZE = (1079<<16) | 1919;
+  DE_MIXER0_OVL_V_PITCH0(0) = 512*4; // Scan line in bytes including overscan
+  DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer1 + 512*16*4; // Start at y=16
 
+  DE_MIXER0_OVL_V_SIZE = (269<<16) | 479;
+
+  DE_MIXER0_VS_CTRL = 1;
+  DE_MIXER0_VS_OUT_SIZE = (1079<<16) | 1919;
+  DE_MIXER0_VS_Y_SIZE = (269<<16) | 479;
+  DE_MIXER0_VS_Y_HSTEP = 0x40000;
+  DE_MIXER0_VS_Y_VSTEP = 0x40000;
+  DE_MIXER0_VS_C_SIZE = (269<<16) | 479;
+  DE_MIXER0_VS_C_HSTEP = 0x40000;
+  DE_MIXER0_VS_C_VSTEP = 0x40000;
+  for(int n=0;n<32;n++) {
+    DE_MIXER0_VS_Y_HCOEF0(n) = 0x40000000;
+    DE_MIXER0_VS_Y_HCOEF1(n) = 0;
+    DE_MIXER0_VS_Y_VCOEF(n)  = 0x00004000;
+    DE_MIXER0_VS_C_HCOEF0(n) = 0x40000000;
+    DE_MIXER0_VS_C_HCOEF1(n) = 0;
+    DE_MIXER0_VS_C_VCOEF(n)  = 0x00004000;
+  }
+  DE_MIXER0_VS_CTRL = 1 | (1<<4);
   DE_MIXER0_GLB_DBUFFER = 1;
-
-  // Erase the whole of WB.
-  for(uint32_t addr = DE_WB; addr < DE_WB + 0x10000; addr += 4)
-    *(volatile uint32_t*)(addr) = 0;
-
-  DE_WB_GCTRL = (1<<29);                     // Enable WB clock
-  DE_WB_SIZE = (1079<<16) | 1919;            // Set WB input size (1920x1080)
-  DE_WB_CROP_COORD = 0;                      // Set crop offset to 0,0
-  DE_WB_CROP_SIZE = (1079<<16) | 1919;       // Set crop dimensions to 1920x1080
-  DE_WB_A_CH0_ADDR = (uint32_t)framebuffer2; // Write date to framebuffer2
-  DE_WB_CH0_PITCH = 1920*4;                  // Pitch in bytes
-  DE_WB_FORMAT = 4;                          // aRGB
-  DE_WB_FS_HSTEP = 1<<20;
-  DE_WB_FS_VSTEP = 1<<20;
-  DE_WB_FS_INSIZE = (1079<<16) | 1919;
-  DE_WB_FS_OUTSIZE = (1079<<16) | 1919;
 }
 
 // This function initializes the HDMI port and TCON.
 // Almost everything here is resolution specific and
 // currently hardcoded to 1920x1080@60Hz.
 void display_init() {
-  framebuffer  = (uint32_t*)0x50000000;
-  framebuffer2 = (uint32_t*)0x51000000;
-
+  framebuffer1 = (uint32_t*)0x50000000;
+  framebuffer2 = (uint32_t*)0x50100000;
+  framebuffer3 = (uint32_t*)0x50200000;
+  active_buffer = framebuffer1;
   display_clocks_init();
   hdmi_init();
   lcd_init();
   de2_init();
+}
+
+void buffer_swap() {
+  if(active_buffer == framebuffer1) {
+      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer1 + 512*16*4;
+      active_buffer = framebuffer2;
+  } else if(active_buffer == framebuffer2) {
+      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer2 + 512*16*4;
+      active_buffer = framebuffer3;
+  } else {
+      DE_MIXER0_OVL_V_TOP_LADD0(0) = (uint32_t)framebuffer3 + 512*16*4;
+      active_buffer = framebuffer1;
+  }
+  // Blank visible area
+  for(int n=512*16; n<512*(270+16); n++)
+    active_buffer[n] = 0;
+  DE_MIXER0_GLB_DBUFFER = 1;
 }

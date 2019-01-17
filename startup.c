@@ -48,6 +48,7 @@ void startup() {
 }
 
 void game_tick_next() {
+  buffer_swap();
   game_tick(tick_counter);
   tick_counter++;
 }
