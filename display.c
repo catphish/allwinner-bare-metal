@@ -100,7 +100,7 @@ void lcd_init() {
   LCD0_TCON1_BASIC4 = (2250<<16) | 40;
   LCD0_TCON1_BASIC5 = (43<<16) | 4;
   
-  LCD0_GINT1 = 1080;
+  LCD0_GINT1 = 1;
   LCD0_GINT0 = (1<<28);
 }
 
