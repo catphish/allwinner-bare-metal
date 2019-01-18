@@ -28,6 +28,4 @@ void game_tick(uint32_t tick_counter) {
   // This approximately represents the performance limit, 10,000 sprites
   for(int n=0;n<20;n++)
     render_layer(&background);
-  uart_print_uint32(tick_counter);
-  uart_print("\r");
 }
