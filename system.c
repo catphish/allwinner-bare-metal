@@ -1,7 +1,9 @@
 #include "system.h"
 
 void init_bss() {
-  for (char* dst = &_bstart; dst < &_bend; dst++)
+  for (char* dst = &_bstart1; dst < &_bend1; dst++)
+    *dst = 0;
+  for (char* dst = &_bstart2; dst < &_bend2; dst++)
     *dst = 0;
 }
 

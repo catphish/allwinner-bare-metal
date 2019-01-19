@@ -46,6 +46,9 @@
 
 #define USB1_HCI_ICR               *(volatile uint32_t *)(USB1_BASE + 0x800)
 #define USB1_HSIC_STATUS           *(volatile uint32_t *)(USB1_BASE + 0x804)
+#define USB1_HCI_UNK1              *(volatile uint32_t *)(USB1_BASE + 0x810)
+
+#define USB_PHY_CFG                *(volatile uint32_t *)0x01c19410
 
 struct td {
   uint32_t info;

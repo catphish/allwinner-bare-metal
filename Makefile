@@ -3,7 +3,7 @@ OBJCOPY=arm-none-eabi-objcopy
 CFLAGS=-T linker.ld -mfpu=neon -mfloat-abi=hard -mcpu=cortex-a7 -fpic -ffreestanding -O3 -nostdlib -Wextra
 
 os.bin: os.elf
-	$(OBJCOPY) -O binary os.elf os.bin
+	$(OBJCOPY) -O binary --remove-section .uncached os.elf os.bin
 os.elf: boot.o startup.o uart.o ports.o mmu.o system.o display.o interrupts.o spritelayers.o usb.o demo.o
 	$(CC) $(CFLAGS) -o os.elf boot.o startup.o uart.o ports.o mmu.o system.o display.o interrupts.o spritelayers.o usb.o demo.o
 

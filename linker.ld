@@ -6,8 +6,16 @@ SECTIONS
     *(.text)
   }
   .bss : {
-    _bstart = . ;
+    _bstart1 = . ;
     *(.bss); *(COMMON);
-     _bend = . ;
+    _bend1 = . ;
+  }
+  .data :  {
+    *(.data)
+  }
+  .uncached 0x50000000 : {
+    _bstart2 = . ;
+    *(UNCACHED);
+    _bend2 = . ;
   }
 }

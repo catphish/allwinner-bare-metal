@@ -16,7 +16,7 @@ void startup() {
   init_bss();
 
   // Reboot in n seconds using watchdog
-  reboot(8); // 0x8 == 10 second reset timer
+  reboot(2); // 0x8 == 10 second reset timer
 
   // Enble all GPIO
   gpio_init();
@@ -36,7 +36,7 @@ void startup() {
   display_init((volatile uint32_t*)(0x60000000-VIDEO_RAM_BYTES));
 
   // USB
-  // usb_init();
+  usb_init();
 
   uart_print("Ready!\r\n");
   game_start();

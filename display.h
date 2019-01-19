@@ -156,7 +156,4 @@
 void display_init();
 void buffer_swap();
 
-volatile uint32_t* framebuffer1;
-volatile uint32_t* framebuffer2;
-volatile uint32_t* framebuffer3;
 volatile uint32_t* active_buffer;
